@@ -19,15 +19,16 @@ router
 router
   .route("/register")
   .post(AdminCtrl.apiCreateUser)
-
-// router.route("/").get(AdminCtrl.apiGetPage)
+  .get(function(req, res) {
+    res.sendFile(Path.join(__dirname, '../frontend/register.html'))
+  })
 
 router.get("/", function(req, res) {
   res.sendFile(Path.join(__dirname, '../frontend/main.html'))
 })
 
-router.get("/register", function(req, res) {
-  res.sendFile(Path.join(__dirname, '../frontend/register.html'))
-})
+// router.get("/register", function(req, res) {
+//   res.sendFile(Path.join(__dirname, '../frontend/register.html'))
+// })
 
 export default router
