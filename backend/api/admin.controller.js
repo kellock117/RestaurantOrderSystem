@@ -1,4 +1,6 @@
 import UsersDAO from "../dao/usersDAO.js"
+import Path from "path"
+const __dirname = Path.resolve()
 
 export default class AdminController{
     static async apiCreateUser(req, res, next) {
@@ -22,7 +24,7 @@ export default class AdminController{
                 res.json({ status: 'ID already exists' })
             }
         } catch (err) {
-            res.status(500).json({ error: err })
+            res.status(400).json({ error: err })
         }
     }
 
@@ -45,7 +47,7 @@ export default class AdminController{
                 res.json({ status: 'user does not exist' })
             }
         } catch (err) {
-            res.status(500).json({ error: err })
+            res.status(400).json({ error: err })
         }
     } 
 
@@ -53,9 +55,9 @@ export default class AdminController{
         try {
             const users = await UsersDAO.getUser()
 
-            return users
+            res.json(users)
         } catch (err) {
-            res.status(500).json({ error: err })
+            res.status(400).json({ error: err })
         }
     }
 
@@ -63,9 +65,9 @@ export default class AdminController{
         try {
             const user = await UsersDAO.getUser(req.body.id)
 
-            
+            res.json(user)
         } catch (err) {
-            res.status(500).json({ error: err })
+            res.status(400).json({ error: err })
         }
     }
 
@@ -86,7 +88,11 @@ export default class AdminController{
                 res.json({ status: 'user does not exist' })
             }
         } catch (err) {
-            res.status(500).json({ error: err })
+            res.status(400).json({ error: err })
         }
     }
+
+    // static apiGetPage(req, res, next) {
+    //     res.sendFile(Path.join(__dirname, '../frontend/main.html'))
+    // }
 }

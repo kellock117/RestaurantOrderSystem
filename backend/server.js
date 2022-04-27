@@ -14,7 +14,17 @@ app.use(express.json())
 //     next()
 // })
 
+// app.use("/", (req, res) => {
+//     res.sendFile(Path.resolve(__dirname, '../frontend/main.html'))
+// })
+
+// app.use("/register", MainRouter, (req, res) => {
+//     res.sendFile(Path.join(__dirname, '../frontend/register.html'))
+//   })
+
 app.use("/", MainRouter)
+
+
 
 app.use("*", (req, res) => res.status(404).json({ error: "not found" }))
 

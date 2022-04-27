@@ -1,4 +1,3 @@
-import { query } from "express"
 import mongodb from "mongodb"
 const ObjectId = mongodb.ObjectId
 let users
@@ -29,13 +28,12 @@ export default class UsersDAO {
         }
     }
 
-    static async getUser(id = None) {
+    static async getUser(id = false) {
         try {
             if (id) {
                 return await users.findOne({ id: id })
             }
-
-            return await users.find()
+            return await users.find().toArray()
         } catch (err) {
             console.log(`Unable to get user: ${err.message}`)
             return { error: err }
@@ -45,7 +43,7 @@ export default class UsersDAO {
     static async updateUser(id, password) {
         try {
             const filter = { id: id }
-            const updateDoc = { password: password }
+            const updateDoc = { $set: { password: password }}
 
             return await users.updateOne(filter, updateDoc)
         } catch (err) {
@@ -56,7 +54,7 @@ export default class UsersDAO {
 
     static async deleteUser(id) {
         try {
-            query = { id: id }
+            const query = { id: id }
             return await users.deleteOne(query)
         } catch (err) {
             console.log(`Unable to delete user: ${err.message}`)
