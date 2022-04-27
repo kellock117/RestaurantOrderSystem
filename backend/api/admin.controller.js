@@ -6,7 +6,7 @@ export default class AdminController{
     static async apiCreateUser(req, res, next) {
         try {
             const id = req.body.id
-
+            
             const checkDuplication = await UsersDAO.getUser(id)
 
             if (!checkDuplication) {

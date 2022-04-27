@@ -10,9 +10,16 @@ export default class LoginController {
     
             if (checkAccount) {
                 if (password === checkAccount.password) {
+                    //TODO: this should be at frontend
+                    // localStorage.setItem("login", true)
+
                     res.json({ status: 'success', 
                     id: checkAccount.id, 
                     role: checkAccount.role})
+                    
+                    //TODO: this should be at frontend. redirect each url based on role
+                    //for example manager go to http://localhost:5000/manger
+                    // res.redirect(process.env.MAIN_PAGE + `/${checkAccount.role}`)
                 }
                 else {
                     res.json({ status: 'incorrect password' })
