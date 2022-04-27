@@ -6,7 +6,7 @@ export default class AdminController{
     static async apiCreateUser(req, res, next) {
         try {
             const id = req.body.id
-            
+
             const checkDuplication = await UsersDAO.getUser(id)
 
             if (!checkDuplication) {
@@ -19,7 +19,8 @@ export default class AdminController{
                     role
                 )
                 
-                res.redirect(process.env.MAIN_PAGE)
+                res.json({ status: "success" })
+                // res.redirect(process.env.MAIN_PAGE)
             }
             else {
                 res.json({ status: 'ID already exists' })
