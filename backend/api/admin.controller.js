@@ -19,7 +19,8 @@ export default class AdminController{
                     role
                 )
                 
-                res.redirect(process.env.MAIN_PAGE)
+                res.json({ status: "success" })
+                // res.redirect(process.env.MAIN_PAGE)
             }
             else {
                 res.json({ status: 'ID already exists' })

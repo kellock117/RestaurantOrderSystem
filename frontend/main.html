@@ -8,18 +8,17 @@
 </head>
 <body>
     <div id="container">
-        <div id="login">
+        <form method="post">
             <h1>Restaurants Order System</h1>
-            <label>ID:</label>
-            <input type="text"/>
-            <label>Password:</label>
-            <input type="text"/>
-            <button value="submit">login</button>
-        </div>
+            <label>ID: <input type="text" name="id" required/> </label> <br/>
+            <label>Password: <input type="text" name="password" required/></label> <br/>
+            <input type="submit" value="Login In">
+        </form>
         <div className="register">
             <a href="http://localhost:5000/register"> create account </a>
         </div>
     </div> 
-    <scripts></scripts>
+    <scripts>
+    </scripts>
 </body>
 </html>

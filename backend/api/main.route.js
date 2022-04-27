@@ -6,9 +6,7 @@ const __dirname = Path.resolve()
 
 const router = express.Router()
 
-// router.route("/").get(UsersCtrl.getUsers)
-// router.route("/id/:id").get(RestaurantsCtrl.apiGetRestaurantById)
-// router.route("/cuisines").get(RestaurantsCtrl.apiGetRestaurantCuisines)
+//control REST api by using express router
 
 router
   .route("/admin")
@@ -23,12 +21,23 @@ router
     res.sendFile(Path.join(__dirname, '../frontend/register.html'))
   })
 
-router.get("/", function(req, res) {
-  res.sendFile(Path.join(__dirname, '../frontend/main.html'))
+router
+  .route("/")
+  .get(function(req, res) {
+    res.sendFile(Path.join(__dirname, '../frontend/main.html'))
+  })
+  .post(LoginCtrl.apiLogin)
+  
+router.get("/manager", function(req, res) {
+  res.send("<h1>Manager</h1>")
 })
 
-// router.get("/register", function(req, res) {
-//   res.sendFile(Path.join(__dirname, '../frontend/register.html'))
-// })
+router.get("/staff", function(req, res) {
+  res.send("<h1>staff</h1>")
+})
+
+router.get("/owner", function(req, res) {
+  res.send("<h1>owner</h1>")
+})
 
 export default router
