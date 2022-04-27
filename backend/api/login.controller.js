@@ -1,4 +1,4 @@
-import UsersDAO from "../dao/usersDAO"
+import UsersDAO from "../dao/usersDAO.js"
 
 export default class LoginController {
     static async apiLogin(req, res, next) {
