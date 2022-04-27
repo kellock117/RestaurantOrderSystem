@@ -18,7 +18,8 @@ export default class AdminController{
                     password,
                     role
                 )
-                res.json({ status: 'success' })
+                
+                res.redirect(process.env.MAIN_PAGE)
             }
             else {
                 res.json({ status: 'ID already exists' })
@@ -91,8 +92,4 @@ export default class AdminController{
             res.status(400).json({ error: err })
         }
     }
-
-    // static apiGetPage(req, res, next) {
-    //     res.sendFile(Path.join(__dirname, '../frontend/main.html'))
-    // }
 }

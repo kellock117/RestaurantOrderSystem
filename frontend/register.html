@@ -8,15 +8,19 @@
 </head>
 <body>
     <div id="container">
-        <div id="login">
+        <form method="post">
             <h1>Create Account</h1>
-            <label>ID:</label>
-            <input type="text"/>
-            <label>Password:</label>
-            <input type="text"/>
-            <button value="submit">Sign in</button>
-        </div>
+            <label>ID: <input type="text" name="id" required/></label> <br/>
+            <label>Password: <input type="text" name="password" required/></label> <br/>
+            <label>Role:
+                <select name="role">
+                    <option value="owner">Owner</option>
+                    <option value="manager">Manager</option>
+                    <option value="staff">Staff</option>
+                </select>
+            </label>
+            <input type="submit" value="Sign In">
+        </form>
     </div> 
-    <scripts></scripts>
 </body>
 </html>
