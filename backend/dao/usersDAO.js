@@ -1,5 +1,5 @@
 import mongodb from "mongodb"
-const ObjectId = mongodb.ObjectId
+// const ObjectId = mongodb.ObjectId
 let users
 
 export default class UsersDAO {
@@ -8,13 +8,13 @@ export default class UsersDAO {
             return
         }
         try {
-            users = await conn.db(process.env.USER).collection('users')
+            users = await conn.db(process.env.DB_NAME).collection('users')
         } catch (err) {
             console.log(`Unable to connect to MongoDB: ${err.message}`)
         }
     }
 
-    static async addUser(id, password, role) {
+    static async createUser(id, password, role) {
         try {
             const userDoc = {
                 id: id,

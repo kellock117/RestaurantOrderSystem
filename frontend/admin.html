@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Main</title>
+</head>
+<body>
+    <h1>Admin Main</h1>
+    <div class="container">
+        <div class="navbar">
+            <!-- 1. -->
+            <ul class="nav nav-ul">
+                <li class="create">Create</li>
+                <li class="view">View</li>
+                <li class="update">Update</li>
+                <li class="delete">Delete</li>
+                <li class="logout">
+                    <form method="get" action="/logout">
+                        <input type="submit" value="Logout">
+                    </form>
+                </li>
+            </ul>
+        </div>
+        <div class="pages">
+            <!-- 2. -->
+        </div>
+    </div>
+    <scripts></scripts>
+</body>
+</html>
+
+<!-- 
+    1. need to decorate navigation bar with option -create, view, update, delete, logout(upper right side),
+        and user id left of logout if you send get request to "/userinfo" then you will receive user info whic contain
+
+        {boolean loggedIn, string id, string role}
+
+    2. if you click each nav bar then hided page will be shown. if you click other then hide current one, and
+        make structure for each option, for example, create session needs id, password blank and option which can select role.
+        For view session, I'll use filter for search function, so be aware of it.
+
+    3. If you want want to know what REST api request you need to send, refer "api/main.route.js " file and check route("admin/api")
+        if you want to know what each middleware return then check "api/admin.controller.js"
+ -->

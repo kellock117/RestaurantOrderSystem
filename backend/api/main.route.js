@@ -6,28 +6,37 @@ const __dirname = Path.resolve()
 
 const router = express.Router()
 
-//control REST api by using express router
 
+
+//control REST api by using express router
+//----------------------------------admin----------------------------------
 router
   .route("/admin")
-  .put(AdminCtrl.apiUpdateUser)
-  .delete(AdminCtrl.apiDeleteUser)
-  .get(AdminCtrl.apiViewUser)
-
-router
-  .route("/register")
-  .post(AdminCtrl.apiCreateUser)
   .get(function(req, res) {
-    res.sendFile(Path.join(__dirname, '../frontend/register.html'))
+    res.sendFile(Path.join(__dirname, '../frontend/admin.html'))
   })
 
+//admin create, view, update, delete function
+router
+  .route('/admin/api')
+  .get(AdminCtrl.apiViewUser)
+  .put(AdminCtrl.apiUpdateUser)
+  .delete(AdminCtrl.apiDeleteUser)
+  .post(AdminCtrl.apiCreateUser)
+
+
+//----------------------------------user----------------------------------
 router
   .route("/")
+  //display main page
   .get(function(req, res) {
     res.sendFile(Path.join(__dirname, '../frontend/main.html'))
   })
+  //login
   .post(LoginCtrl.apiLogin)
-  
+
+router.get("/logout", LoginCtrl.apiLogout)
+
 router.get("/manager", function(req, res) {
   res.send("<h1>Manager</h1>")
 })

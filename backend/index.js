@@ -2,7 +2,7 @@ import app from "./server.js"
 import mongodb from "mongodb"
 import dotenv from "dotenv"
 import UsersDAO from "./dao/usersDAO.js"
-// import ReviewsDAO from "./dao/reviewsDAO.js"
+
 dotenv.config()
 const MongoClient = mongodb.MongoClient
 
@@ -12,7 +12,7 @@ MongoClient.connect(
   process.env.DB_URI,
   {
     maxPoolSize: 50,
-    wtimeout: 2500,
+    wtimeoutMS: 2500,
     useNewUrlParser: true }
   )
   .catch(err => {
