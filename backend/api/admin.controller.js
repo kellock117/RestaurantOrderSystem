@@ -3,7 +3,7 @@ import Path from "path"
 const __dirname = Path.resolve()
 
 export default class AdminController{
-    static async apiCreateUser(req, res, next) {
+    static async apiCreateUser(req, res) {
         try {
             const id = req.body.id
 
@@ -13,7 +13,7 @@ export default class AdminController{
                 const password = req.body.password
                 const role = req.body.role
 
-                const UserResponse = await UsersDAO.addUser(
+                const UserResponse = await UsersDAO.createUser(
                     id,
                     password,
                     role
@@ -30,7 +30,7 @@ export default class AdminController{
         }
     }
 
-    static async apiUpdateUser(req, res, next) {
+    static async apiUpdateUser(req, res) {
         try {
             const id = req.body.id
             const password = req.body.password
@@ -53,7 +53,7 @@ export default class AdminController{
         }
     } 
 
-    static async apiViewUser(req, res, next) {
+    static async apiViewUser(res) {
         try {
             const users = await UsersDAO.getUser()
 
@@ -63,7 +63,7 @@ export default class AdminController{
         }
     }
 
-    static async apiSearchUser(req, res, next) {
+    static async apiSearchUser(req, res) {
         try {
             const user = await UsersDAO.getUser(req.body.id)
 
@@ -73,7 +73,7 @@ export default class AdminController{
         }
     }
 
-    static async apiDeleteUser(req, res, next) {
+    static async apiDeleteUser(req, res) {
         try {
             const id = req.body.id
 

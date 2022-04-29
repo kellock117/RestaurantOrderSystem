@@ -1,21 +1,32 @@
 import express from "express"
 import cors from "cors"
-import MainRouter from "./api/main.route.js"
 import Path from "path"
 import BodyParser from "body-parser"
+
+import MainRouter from "./api/main.route.js"
+
 const __dirname = Path.resolve()
 
 const app = express()
+import UserForm from "./user.js"
+global.User = new UserForm()
 
 //basic set up for server
 app.use(BodyParser.urlencoded({extended: false}))
 app.use(cors())
 app.use(express.json())
 
-//use MainRouter for main page and suburl 
-app.use("/", MainRouter)
+app.use(((req, res, next) => {
+    //when it is not logged in and url is main or admin page then redirect to main page
+    if (!User.loggedIn && req.url !== "/") {
+      res.redirect(process.env.MAIN_PAGE)
+    }
+    else {
+        next()
+    }
+}))
 
-//if undefined url is passed return 404 status code
-app.use("*", (req, res) => res.status(404).json({ error: "not found" }))
+//use MainRouter for main page and suburl
+app.use("/", MainRouter)
 
 export default app
