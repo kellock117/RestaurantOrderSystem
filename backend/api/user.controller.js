@@ -134,4 +134,12 @@ export default class UserController{
             res.status(400).json({ error: err })
         }
     }
+
+    static async apiGetUserInfo(req, res) {
+        try {
+            res.json(User)
+        } catch (err) {
+            res.status(400).json({ error: err })
+        }
+    }
 }

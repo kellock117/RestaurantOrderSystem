@@ -49,6 +49,7 @@ router
   .post(LoginCtrl.apiLogin)
 
 router.get("/logout", LoginCtrl.apiLogout)
+router.get("/userinfo", UserCtrl.apiGetUserInfo)
 
 router.get("/manager", function(req, res) {
   res.send("<h1>Manager</h1>")
