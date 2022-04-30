@@ -1,27 +1,38 @@
 import UsersDAO from "../dao/usersDAO.js"
-import Path from "path"
-const __dirname = Path.resolve()
 
 export default class AdminController{
     static async apiCreateUser(req, res) {
         try {
             const id = req.body.id
 
-            const checkDuplication = await UsersDAO.getUser(id)
+            //check if user already exists
+            const checkIdDuplication = await UsersDAO.getUserById(id)
 
-            if (!checkDuplication) {
-                const password = req.body.password
-                const role = req.body.role
-
-                const UserResponse = await UsersDAO.createUser(
-                    id,
-                    password,
-                    role
-                )
+            //if not
+            if (!checkIdDuplication) {
+                const userName = req.body.userName
+                const checkUserNameDuplication = await UsersDAO.getUserByFilter("userName", userName)
+                
+                //if user name does not exist
+                if (!checkUserNameDuplication.length) {
+                    const password = req.body.password
+                    const role = req.body.role
+    
+                    //access to database
+                    const UserResponse = await UsersDAO.createUser(
+                        id,
+                        password,
+                        userName,
+                        role
+                    )
+                }
+                else {
+                    return res.json({ status: "user name already exists" })
+                }
                 
                 res.json({ status: "success" })
-                // res.redirect(process.env.MAIN_PAGE)
             }
+            //if id already exists
             else {
                 res.json({ status: 'ID already exists' })
             }
@@ -33,15 +44,35 @@ export default class AdminController{
     static async apiUpdateUser(req, res) {
         try {
             const id = req.body.id
-            const password = req.body.password
+            const checkAccount = await UsersDAO.getUserById(id)
 
-            const checkAccount = await UsersDAO.getUser(id)
-
+            //check account exist or not
             if (checkAccount) {
-                const UserResponse = await UsersDAO.updateUser(
-                    id,
-                    password
-                )
+                //if password is passed then change password
+                if (req.body.password) {
+                    const UserResponse = await UsersDAO.updateUser(
+                        id,
+                        req.body.password
+                    )
+                }
+                //if userName or role are passed then change them
+                else {
+                    const userName = req.body.userName
+                    const checkUserNameDuplication = await UsersDAO.getUserByFilter("userName", userName)
+
+                    //if user name does not exist
+                    if (!checkUserNameDuplication.length) {
+                        const UserResponse = await UsersDAO.updateUser(
+                            id,
+                            userName,
+                            req.body.role
+                        )
+                    }
+                    //if exists then return status json
+                    else {
+                        return res.json({ status: "user name already exists" })
+                    }
+                }
 
                 res.json({ status: 'success'})
             }
@@ -53,10 +84,11 @@ export default class AdminController{
         }
     } 
 
-    static async apiViewUser(res) {
+    static async apiViewUser(req, res) {
         try {
-            const users = await UsersDAO.getUser()
+            let users = await UsersDAO.getAllUsers()
 
+            //return users list
             res.json(users)
         } catch (err) {
             res.status(400).json({ error: err })
@@ -65,9 +97,19 @@ export default class AdminController{
 
     static async apiSearchUser(req, res) {
         try {
-            const user = await UsersDAO.getUser(req.body.id)
+            let users
 
-            res.json(user)
+            const filter = req.body.filter
+
+            if (filter === "userName") {
+                users = await UsersDAO.getUserByFilter(filter, req.body.value)
+            }
+            else if (filter === "role") {
+                users = await UsersDAO.getUserByFilter(filter, req.body.value)
+            }
+
+            //return filtered users list
+            res.json(users)
         } catch (err) {
             res.status(400).json({ error: err })
         }
@@ -77,12 +119,11 @@ export default class AdminController{
         try {
             const id = req.body.id
 
-            const checkAccount = await UsersDAO.getUser(id)
+            const checkAccount = await UsersDAO.getUserById(id)
 
+            //check whether the user exists
             if (checkAccount) {
-                const UserResponse = await UsersDAO.deleteUser(
-                    id
-                )
+                const UserResponse = await UsersDAO.deleteUser(id)
 
                 res.json({ status: 'success'})
             }

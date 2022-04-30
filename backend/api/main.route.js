@@ -18,11 +18,24 @@ router
 
 //admin create, view, update, delete function
 router
-  .route('/admin/api')
-  .get(AdminCtrl.apiViewUser)
-  .put(AdminCtrl.apiUpdateUser)
-  .delete(AdminCtrl.apiDeleteUser)
+  .route('/admin/create')
   .post(AdminCtrl.apiCreateUser)
+
+router
+  .route('/admin/view')
+  .get(AdminCtrl.apiViewUser)
+
+router
+  .route('/admin/search')  
+  .get(AdminCtrl.apiSearchUser)
+
+router
+  .route('/admin/update')  
+  .put(AdminCtrl.apiUpdateUser)
+
+router
+  .route('/admin/delete')  
+  .delete(AdminCtrl.apiDeleteUser)
 
 
 //----------------------------------user----------------------------------

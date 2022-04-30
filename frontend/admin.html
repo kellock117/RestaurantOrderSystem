@@ -12,10 +12,9 @@
         <div class="navbar">
             <!-- 1. -->
             <ul class="nav nav-ul">
-                <li class="create">Create</li>
-                <li class="view">View</li>
-                <li class="update">Update</li>
-                <li class="delete">Delete</li>
+                <li class="create user">Create User</li>
+                <li class="user list">View</li>
+                <li class="user name"> </li>
                 <li class="logout">
                     <form method="get" action="/logout">
                         <input type="submit" value="Logout">
@@ -27,19 +26,20 @@
             <!-- 2. -->
         </div>
     </div>
-    <scripts></scripts>
+    <script>
+        import user from "../backend/server.js"
+        document.getElementsByClassName('user name')[0].innerHTML = "User Name: " + user.userName
+    </script>
 </body>
 </html>
 
 <!-- 
-    1. need to decorate navigation bar with option -create, view, update, delete, logout(upper right side),
-        and user id left of logout if you send get request to "/userinfo" then you will receive user info whic contain
-
-        {boolean loggedIn, string id, string role}
+    1. need to decorate navigation bar with option -Create User, User List(this is for view, search, update, delete),
+        logout(upper right side), and user name left of logout
 
     2. if you click each nav bar then hided page will be shown. if you click other then hide current one, and
-        make structure for each option, for example, create session needs id, password blank and option which can select role.
-        For view session, I'll use filter for search function, so be aware of it.
+        make structure for each option, for example, create session needs id, password, user name blank and option which can select role.
+        For user list session, I'll use filter for search function, ask me if you are doing this, I'll send you sample image.
 
     3. If you want want to know what REST api request you need to send, refer "api/main.route.js " file and check route("admin/api")
         if you want to know what each middleware return then check "api/admin.controller.js"

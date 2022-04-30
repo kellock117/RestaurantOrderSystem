@@ -1,5 +1,4 @@
 import mongodb from "mongodb"
-// const ObjectId = mongodb.ObjectId
 let menus
 
 export default class MenusDAO {

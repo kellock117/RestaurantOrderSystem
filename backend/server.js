@@ -12,14 +12,17 @@ import UserForm from "./user.js"
 global.User = new UserForm()
 
 //basic set up for server
-app.use(BodyParser.urlencoded({extended: false}))
+app.use(BodyParser.urlencoded({ extended: false }))
 app.use(cors())
 app.use(express.json())
 
 app.use(((req, res, next) => {
     //when it is not logged in and url is main or admin page then redirect to main page
     if (!User.loggedIn && req.url !== "/") {
-      res.redirect(process.env.MAIN_PAGE)
+        res.redirect(process.env.MAIN_PAGE)
+    }
+    else if (User.loggedIn && req.url !== `/${User.role}` && req.url !== "/") {
+        res.redirect(process.env.MAIN_PAGE)
     }
     else {
         next()
