@@ -1,8 +1,9 @@
 export default class User {
     loggedIn = false
     id = null
+    userName = null
     role = null
-    
+
     constructor() {}
 
     set loggedIn(loggedIn) {
@@ -11,6 +12,10 @@ export default class User {
 
     set id(id) {
         this.id = id
+    }
+
+    set userName(userName) {
+        this.userName = userName
     }
 
     set role(role) {

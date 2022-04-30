@@ -6,12 +6,13 @@ export default class LoginController {
             const id = req.body.id
             const password = req.body.password
             
-            const checkAccount = await UsersDAO.getUser(id)
+            const checkAccount = await UsersDAO.getUserById(id)
     
             if (checkAccount) {
                 if (password === checkAccount.password) {
                     User.loggedIn = true
-                    User.id = checkAccount.id
+                    User.id = id
+                    User.userName = checkAccount.userName
                     User.role = checkAccount.role
                     
                     res.redirect(process.env.MAIN_PAGE + `/${checkAccount.role}`)
@@ -32,6 +33,7 @@ export default class LoginController {
         try {
             User.loggedIn = false
             User.id = null
+            User.userName = null
             User.role = null
 
             res.redirect(process.env.MAIN_PAGE)
