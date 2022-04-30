@@ -1,5 +1,5 @@
 import express from "express"
-import AdminCtrl from "./admin.controller.js"
+import UserCtrl from "./user.controller.js"
 import LoginCtrl from "./login.controller.js"
 import Path from "path"
 const __dirname = Path.resolve()
@@ -19,23 +19,23 @@ router
 //admin create, view, update, delete function
 router
   .route('/admin/create')
-  .post(AdminCtrl.apiCreateUser)
+  .post(UserCtrl.apiCreateUser)
 
 router
   .route('/admin/view')
-  .get(AdminCtrl.apiViewUser)
+  .get(UserCtrl.apiViewUser)
 
 router
   .route('/admin/search')  
-  .get(AdminCtrl.apiSearchUser)
+  .get(UserCtrl.apiSearchUser)
 
 router
   .route('/admin/update')  
-  .put(AdminCtrl.apiUpdateUser)
+  .put(UserCtrl.apiUpdateUser)
 
 router
   .route('/admin/delete')  
-  .delete(AdminCtrl.apiDeleteUser)
+  .delete(UserCtrl.apiDeleteUser)
 
 
 //----------------------------------user----------------------------------
@@ -49,6 +49,7 @@ router
   .post(LoginCtrl.apiLogin)
 
 router.get("/logout", LoginCtrl.apiLogout)
+router.get("/userinfo", UserCtrl.apiGetUserInfo)
 
 router.get("/manager", function(req, res) {
   res.send("<h1>Manager</h1>")

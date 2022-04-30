@@ -1,6 +1,6 @@
 import UsersDAO from "../dao/usersDAO.js"
 
-export default class AdminController{
+export default class UserController{
     static async apiCreateUser(req, res) {
         try {
             const id = req.body.id
@@ -130,6 +130,14 @@ export default class AdminController{
             else {
                 res.json({ status: 'user does not exist' })
             }
+        } catch (err) {
+            res.status(400).json({ error: err })
+        }
+    }
+
+    static async apiGetUserInfo(req, res) {
+        try {
+            res.json(User)
         } catch (err) {
             res.status(400).json({ error: err })
         }
