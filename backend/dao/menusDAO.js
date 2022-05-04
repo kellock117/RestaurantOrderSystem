@@ -1,12 +1,14 @@
-let menus
-
 export default class MenusDAO {
+    constructor() {
+        this.menus = null
+    }
+
     static async injectDB(conn) {
-        if (menus) {
+        if (this.menus) {
             return
         }
         try {
-            menus = await conn.db(process.env.DB_NAME).collection('menus')
+            this.menus = await conn.db(process.env.DB_NAME).collection('menuss')
         } catch (err) {
             console.log(`Unable to connect to MongoDB: ${err.message}`)
         }
@@ -19,7 +21,7 @@ export default class MenusDAO {
                 price: price,
                 image: image
             }
-            return await menus.insertOne(menuDoc)
+            return await this.menus.insertOne(menuDoc)
         } catch (err) {
             console.log(`Unable to insert user: ${err.message}`)
             return { error: err }
@@ -29,28 +31,34 @@ export default class MenusDAO {
     static async getMenu(name = false) {
         try {
             if (name) {
-                return await menus.findOne({ name: name })
+                return await this.menus.findOne({ name: name })
             }
-            return await menus.find().toArray()
+            return await this.menus.find().toArray()
         } catch (err) {
             console.log(`Unable to get user: ${err.message}`)
             return { error: err }
         }
     }
 
-    static async updateMenu(name, price, image) {
+    static async getMenus(name) {
+        try {
+            return await this.menus.find({ name: { $regex: name } }).toArray()
+        } catch (err) {
+            console.log(`Unable to get user: ${err.message}`)
+            return { error: err }
+        }
+    }
+
+    static async updateMenu(name, rename, price, image) {
         try {
             const filter = { name: name }
-            let updateDoc
+            let updateDoc = { $set: {
+                name: rename,
+                price: price,
+                image: image
+            }}
 
-            if (price) {
-                updateDoc = { $set: { price: price }}
-            }
-            else if (image) {
-                updateDoc = { $set: { image: image }}
-            }
-
-            return await menus.updateOne(filter, updateDoc)
+            return await this.menus.updateOne(filter, updateDoc)
         } catch (err) {
             console.log(`Unable to update user: ${err.message}`)
             return { error: err }
@@ -60,7 +68,7 @@ export default class MenusDAO {
     static async deleteMenu(name) {
         try {
             const query = { name: name }
-            return await menus.deleteOne(query)
+            return await this.menus.deleteOne(query)
         } catch (err) {
             console.log(`Unable to delete user: ${err.message}`)
             return { error: err }

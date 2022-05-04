@@ -44,41 +44,34 @@ export default class UserController{
     static async apiUpdateUser(req, res) {
         try {
             const id = req.body.id
-            const checkAccount = await UsersDAO.getUserById(id)
 
-            //check account exist or not
-            if (checkAccount) {
-                //if password is passed then change password
-                if (req.body.password) {
+            //if password is passed then change password
+            if (req.body.password) {
+                await UsersDAO.updateUser(
+                    id,
+                    req.body.password
+                )
+            }
+            //if userName or role are passed then change them
+            else {
+                const userName = req.body.userName
+                const checkUserNameDuplication = await UsersDAO.getUserByFilter("userName", userName)
+
+                //if user name does not exist
+                if (!checkUserNameDuplication.length) {
                     await UsersDAO.updateUser(
                         id,
-                        req.body.password
+                        userName,
+                        req.body.role
                     )
                 }
-                //if userName or role are passed then change them
+                //if exists then return status json
                 else {
-                    const userName = req.body.userName
-                    const checkUserNameDuplication = await UsersDAO.getUserByFilter("userName", userName)
-
-                    //if user name does not exist
-                    if (!checkUserNameDuplication.length) {
-                        await UsersDAO.updateUser(
-                            id,
-                            userName,
-                            req.body.role
-                        )
-                    }
-                    //if exists then return status json
-                    else {
-                        return res.json({ status: "user name already exists" })
-                    }
+                    return res.json({ status: "user name already exists" })
                 }
+            }
 
-                res.json({ status: 'success'})
-            }
-            else {
-                res.json({ status: 'user does not exist' })
-            }
+            res.json({ status: 'success'})
         } catch (err) {
             res.status(400).json({ error: err })
         }
@@ -110,18 +103,9 @@ export default class UserController{
     static async apiDeleteUser(req, res) {
         try {
             const id = req.body.id
+            await UsersDAO.deleteUser(id)
 
-            const checkAccount = await UsersDAO.getUserById(id)
-
-            //check whether the user exists
-            if (checkAccount) {
-                await UsersDAO.deleteUser(id)
-
-                res.json({ status: 'success'})
-            }
-            else {
-                res.json({ status: 'user does not exist' })
-            }
+            res.json({ status: 'success'})
         } catch (err) {
             res.status(400).json({ error: err })
         }

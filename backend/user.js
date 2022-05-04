@@ -4,8 +4,6 @@ export default class User {
     userName = null
     role = null
 
-    constructor() {}
-
     set loggedIn(loggedIn) {
         this.loggedIn = loggedIn
     }
