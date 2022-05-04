@@ -14,11 +14,16 @@ export default class LoginController {
                     User.id = id
                     User.userName = checkAccount.userName
                     User.role = checkAccount.role
+
+                    console.log(User)
                     
-                    res.redirect(process.env.MAIN_PAGE + `/${checkAccount.role}`)
+                    res.json({ 
+                        status: 'success',
+                        role: User.role
+                    })
                 }
                 else {
-                    res.json({ status: 'incorrect password' })
+                    res.json( { status: 'incorrect password'} )
                 }
             }
             else {
@@ -29,14 +34,12 @@ export default class LoginController {
         }
     }
 
-    static async apiLogout(req, res) {
+    static apiLogout(res) {
         try {
             User.loggedIn = false
             User.id = null
             User.userName = null
             User.role = null
-
-            res.redirect(process.env.MAIN_PAGE)
         } catch (err) {
             res.status(500).json({ error: err })
         }

@@ -8,15 +8,36 @@
 </head>
 <body>
     <div id="container">
-        <form method="post">
-            <h1>Restaurants Order System</h1>
-            <label>ID: <input type="text" name="id" required/> </label> <br/>
-            <label>Password: <input type="text" name="password" required/></label> <br/>
-            <input type="submit" value="Login In">
-        </form>
+        <h1>Restaurants Order System</h1>
+        <label>ID: <input type="text" id="id" required/> </label> <br/>
+        <label>Password: <input type="text" id="password" required/></label> <br/>
+        <button onclick="logInStatus()">LogIn</button>
     </div> 
-    <scripts>
-    </scripts>
+    <script>
+        function logInStatus() {
+            fetch("http://localhost:5000", {
+                method: "post",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    id: document.getElementById("id").value,
+                    password: document.getElementById("password").value
+                })
+            }).then((response) => response.json())
+            .then((data) => {
+                if (data.status === 'success') {
+                    location.replace("http://localhost:5000/" + data.role)
+                }
+                else if (data.status === 'incorrect password') {
+                    window.alert("Password is incorrect. Please try again")
+                }
+                else if (data.status === 'no such ID') {
+                    window.alert("There is no such ID.")
+                }
+            })
+        }
+    </script>
 </body>
 </html>
 

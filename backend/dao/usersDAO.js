@@ -1,4 +1,3 @@
-import mongodb from "mongodb"
 let users
 
 export default class UsersDAO {
