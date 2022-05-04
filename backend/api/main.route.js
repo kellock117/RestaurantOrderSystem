@@ -1,6 +1,7 @@
 import express from "express"
 import UserCtrl from "./user.controller.js"
 import LoginCtrl from "./login.controller.js"
+import MenuCtrl from "./menu.controller.js"
 import Path from "path"
 const __dirname = Path.resolve()
 
@@ -60,6 +61,26 @@ router
 router.get("/manager", function(res) {
   res.send("<h1>Manager</h1>")
 })
+
+router
+  .route("/manager/create")
+  .post(MenuCtrl.apiCreateMenu)
+
+router
+  .route("/manager/view")
+  .get(MenuCtrl.apiViewMenu)
+
+router
+  .route("/manager/search")
+  .get(MenuCtrl.apiSearchMenu)
+
+router
+  .route("/manager/update")
+  .put(MenuCtrl.apiUpdateMenu)
+
+router
+  .route("/manager/delete")
+  .delete(MenuCtrl.apiDeleteMenu)
 
 router
   .route('manager/logout')

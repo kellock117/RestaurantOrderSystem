@@ -5,6 +5,7 @@ export default class LoginController {
         try {
             const id = req.body.id
             const password = req.body.password
+            console.log(id, password)
             
             const checkAccount = await UsersDAO.getUserById(id)
     
@@ -14,8 +15,6 @@ export default class LoginController {
                     User.id = id
                     User.userName = checkAccount.userName
                     User.role = checkAccount.role
-
-                    console.log(User)
                     
                     res.json({ 
                         status: 'success',
