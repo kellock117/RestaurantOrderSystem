@@ -1,4 +1,3 @@
-import mongodb from "mongodb"
 let menus
 
 export default class MenusDAO {

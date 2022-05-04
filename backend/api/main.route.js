@@ -12,7 +12,7 @@ const router = express.Router()
 //----------------------------------admin----------------------------------
 router
   .route("/admin")
-  .get(function(req, res) {
+  .get(function(_req, res) {
     res.sendFile(Path.join(__dirname, '../frontend/admin.html'))
   })
 
@@ -37,30 +37,62 @@ router
   .route('/admin/delete')  
   .delete(UserCtrl.apiDeleteUser)
 
+router
+  .route('admin/logout')
+  .get(LoginCtrl.apiLogout)
 
-//----------------------------------user----------------------------------
+router
+  .route('admin/userinfo')
+  .get(UserCtrl.apiGetUserInfo)
+
+//----------------------------------main----------------------------------
 router
   .route("/")
   //display main page
-  .get(function(req, res) {
+  .get(function(_req, res) {
     res.sendFile(Path.join(__dirname, '../frontend/main.html'))
   })
   //login
   .post(LoginCtrl.apiLogin)
 
-router.get("/logout", LoginCtrl.apiLogout)
-router.get("/userinfo", UserCtrl.apiGetUserInfo)
 
-router.get("/manager", function(req, res) {
+//----------------------------------manager----------------------------------
+router.get("/manager", function(res) {
   res.send("<h1>Manager</h1>")
 })
 
-router.get("/staff", function(req, res) {
+router
+  .route('manager/logout')
+  .get(LoginCtrl.apiLogout)
+
+router
+  .route('manager/userinfo')
+  .get(UserCtrl.apiGetUserInfo)
+//----------------------------------staff----------------------------------
+
+router.get("/staff", function(res) {
   res.send("<h1>staff</h1>")
 })
 
-router.get("/owner", function(req, res) {
+router
+  .route('staff/logout')
+  .get(LoginCtrl.apiLogout)
+
+router
+  .route('staff/userinfo')
+  .get(UserCtrl.apiGetUserInfo)
+//----------------------------------owner----------------------------------
+
+router.get("/owner", function(res) {
   res.send("<h1>owner</h1>")
 })
+
+router
+  .route('owner/logout')
+  .get(LoginCtrl.apiLogout)
+
+router
+  .route('owner/userinfo')
+  .get(UserCtrl.apiGetUserInfo)
 
 export default router

@@ -19,7 +19,7 @@ export default class UserController{
                     const role = req.body.role
     
                     //access to database
-                    const UserResponse = await UsersDAO.createUser(
+                    await UsersDAO.createUser(
                         id,
                         password,
                         userName,
@@ -50,7 +50,7 @@ export default class UserController{
             if (checkAccount) {
                 //if password is passed then change password
                 if (req.body.password) {
-                    const UserResponse = await UsersDAO.updateUser(
+                    await UsersDAO.updateUser(
                         id,
                         req.body.password
                     )
@@ -62,7 +62,7 @@ export default class UserController{
 
                     //if user name does not exist
                     if (!checkUserNameDuplication.length) {
-                        const UserResponse = await UsersDAO.updateUser(
+                        await UsersDAO.updateUser(
                             id,
                             userName,
                             req.body.role
@@ -84,7 +84,7 @@ export default class UserController{
         }
     } 
 
-    static async apiViewUser(req, res) {
+    static async apiViewUser(_req, res) {
         try {
             let users = await UsersDAO.getAllUsers()
 
@@ -97,16 +97,8 @@ export default class UserController{
 
     static async apiSearchUser(req, res) {
         try {
-            let users
-
             const filter = req.body.filter
-
-            if (filter === "userName") {
-                users = await UsersDAO.getUserByFilter(filter, req.body.value)
-            }
-            else if (filter === "role") {
-                users = await UsersDAO.getUserByFilter(filter, req.body.value)
-            }
+            let users = await UsersDAO.getUserByFilter(filter, req.body.value)
 
             //return filtered users list
             res.json(users)
@@ -123,7 +115,7 @@ export default class UserController{
 
             //check whether the user exists
             if (checkAccount) {
-                const UserResponse = await UsersDAO.deleteUser(id)
+                await UsersDAO.deleteUser(id)
 
                 res.json({ status: 'success'})
             }
@@ -135,11 +127,17 @@ export default class UserController{
         }
     }
 
-    static async apiGetUserInfo(req, res) {
+    static apiGetUserInfo(_req, res) {
         try {
             res.json(User)
         } catch (err) {
             res.status(400).json({ error: err })
         }
     }
+
+    // checkValidation() {
+    //     if (User.role !== "admin") {
+    //         return res.status(400).json({ status: "bad request" })
+    //     }
+    // }
 }
