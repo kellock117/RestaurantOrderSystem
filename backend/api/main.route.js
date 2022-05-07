@@ -2,6 +2,7 @@ import express from "express"
 import UserCtrl from "./user.controller.js"
 import LoginCtrl from "./login.controller.js"
 import MenuCtrl from "./menu.controller.js"
+import PromotionCtrl from "./promotion.controller.js"
 import Path from "path"
 const __dirname = Path.resolve()
 
@@ -58,29 +59,45 @@ router
 
 
 //----------------------------------manager----------------------------------
-router.get("/manager", function(res) {
+router.get("/manager", function(_req, res) {
   res.send("<h1>Manager</h1>")
 })
 
 router
-  .route("/manager/create")
+  .route("/manager/createMenu")
   .post(MenuCtrl.apiCreateMenu)
 
 router
-  .route("/manager/view")
+  .route("/manager/viewMenu")
   .get(MenuCtrl.apiViewMenu)
 
 router
-  .route("/manager/search")
+  .route("/manager/searchMenu")
   .get(MenuCtrl.apiSearchMenu)
 
 router
-  .route("/manager/update")
+  .route("/manager/updateMenu")
   .put(MenuCtrl.apiUpdateMenu)
 
 router
-  .route("/manager/delete")
+  .route("/manager/deleteMenu")
   .delete(MenuCtrl.apiDeleteMenu)
+
+  router
+  .route("/manager/createPromotion")
+  .post(PromotionCtrl.apiCreatePromotion)
+
+router
+  .route("/manager/viewPromotion")
+  .get(PromotionCtrl.apiViewPromotion)
+
+router
+  .route("/manager/updatePromotion")
+  .put(PromotionCtrl.apiUpdatePromotion)
+
+router
+  .route("/manager/deletePromotion")
+  .delete(PromotionCtrl.apiDeletePromotion)
 
 router
   .route('manager/logout')

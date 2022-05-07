@@ -24,7 +24,7 @@ export default class UsersDAO {
             }
             return await this.users.insertOne(userDoc)
         } catch (err) {
-            console.log(`Unable to insert user: ${err.message}`)
+            console.log(`Unable to creaet user: ${err.message}`)
             return { error: err }
         }
     }
@@ -33,7 +33,7 @@ export default class UsersDAO {
         try {
             return await this.users.find().toArray()
         } catch (err) {
-            console.log(`Unable to get user: ${err.message}`)
+            console.log(`Unable to get all users: ${err.message}`)
             return { error: err }
         }
     }
