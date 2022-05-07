@@ -24,7 +24,7 @@ export default class MenusDAO {
             return await this.menus.insertOne(menuDoc)
         } catch (err) {
             console.log(`Unable to create menu: ${err.message}`)
-            return { error: err }
+            return { error: err.message }
         }
     }
 
@@ -33,7 +33,7 @@ export default class MenusDAO {
             return await this.menus.findOne({ name: name })
         } catch (err) {
             console.log(`Unable to get menu: ${err.message}`)
-            return { error: err }
+            return { error: err.message }
         }
     }
 
@@ -42,7 +42,7 @@ export default class MenusDAO {
             return await this.menus.find().toArray()
         } catch (err) {
             console.log(`Unable to get all menu: ${err.message}`)
-            return { error: err }
+            return { error: err.message }
         }
     }
 
@@ -51,7 +51,7 @@ export default class MenusDAO {
             return await this.menus.find({ name: { $regex: name } }).toArray()
         } catch (err) {
             console.log(`Unable to get menus: ${err.message}`)
-            return { error: err }
+            return { error: err.message }
         }
     }
 
@@ -67,7 +67,7 @@ export default class MenusDAO {
             return await this.menus.updateOne(filter, updateDoc)
         } catch (err) {
             console.log(`Unable to update menu: ${err.message}`)
-            return { error: err }
+            return { error: err.message }
         }
     }
 
@@ -77,7 +77,7 @@ export default class MenusDAO {
             return await this.menus.deleteOne(query)
         } catch (err) {
             console.log(`Unable to delete menu: ${err.message}`)
-            return { error: err }
+            return { error: err.message }
         }
     }
 }

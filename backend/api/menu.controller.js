@@ -1,13 +1,11 @@
-import MenusDAO from "../dao/MenusDAO.js"
+import MenusDAO from "../dao/menusDAO.js"
 
 export default class MenuController{
     static async apiCreateMenu(req, res) {
         try {
             const name = req.body.name
-            console.log(req.body)
             //check if menu already exists
             const checkDuplication = await MenusDAO.getMenu(name)
-            console.log(checkDuplication)
 
             //if not
             if (!checkDuplication) {
@@ -43,7 +41,7 @@ export default class MenuController{
                 const checkMenuNameDuplication = await MenusDAO.getMenu(rename)
 
                 //if Menu name does exist
-                if (checkMenuNameDuplication.length) {
+                if (checkMenuNameDuplication) {
                     return res.json({ status: "Menu name already exists" })
                 }
             }

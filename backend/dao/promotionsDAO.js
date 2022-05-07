@@ -30,7 +30,7 @@ export default class PromotionsDAO {
 
     static async getPromotion(code) {
         try {
-                return await this.promotions.findOne({ code: code })
+            return await this.promotions.findOne({ code: code })
         } catch (err) {
             console.log(`Unable to get promotion: ${err.message}`)
             return { error: err }
