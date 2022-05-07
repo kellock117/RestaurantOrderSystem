@@ -8,7 +8,7 @@ export default class MenusDAO {
             return
         }
         try {
-            this.menus = await conn.db(process.env.DB_NAME).collection('menuss')
+            this.menus = await conn.db(process.env.DB_NAME).collection('menus')
         } catch (err) {
             console.log(`Unable to connect to MongoDB: ${err.message}`)
         }
@@ -23,19 +23,25 @@ export default class MenusDAO {
             }
             return await this.menus.insertOne(menuDoc)
         } catch (err) {
-            console.log(`Unable to insert user: ${err.message}`)
+            console.log(`Unable to create menu: ${err.message}`)
             return { error: err }
         }
     }
 
-    static async getMenu(name = false) {
+    static async getMenu(name) {
         try {
-            if (name) {
-                return await this.menus.findOne({ name: name })
-            }
+            return await this.menus.findOne({ name: name })
+        } catch (err) {
+            console.log(`Unable to get menu: ${err.message}`)
+            return { error: err }
+        }
+    }
+
+    static async getAllMenus() {
+        try {
             return await this.menus.find().toArray()
         } catch (err) {
-            console.log(`Unable to get user: ${err.message}`)
+            console.log(`Unable to get all menu: ${err.message}`)
             return { error: err }
         }
     }
@@ -44,7 +50,7 @@ export default class MenusDAO {
         try {
             return await this.menus.find({ name: { $regex: name } }).toArray()
         } catch (err) {
-            console.log(`Unable to get user: ${err.message}`)
+            console.log(`Unable to get menus: ${err.message}`)
             return { error: err }
         }
     }
@@ -60,7 +66,7 @@ export default class MenusDAO {
 
             return await this.menus.updateOne(filter, updateDoc)
         } catch (err) {
-            console.log(`Unable to update user: ${err.message}`)
+            console.log(`Unable to update menu: ${err.message}`)
             return { error: err }
         }
     }
@@ -70,7 +76,7 @@ export default class MenusDAO {
             const query = { name: name }
             return await this.menus.deleteOne(query)
         } catch (err) {
-            console.log(`Unable to delete user: ${err.message}`)
+            console.log(`Unable to delete menu: ${err.message}`)
             return { error: err }
         }
     }

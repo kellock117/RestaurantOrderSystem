@@ -4,9 +4,10 @@ export default class MenuController{
     static async apiCreateMenu(req, res) {
         try {
             const name = req.body.name
-
+            console.log(req.body)
             //check if menu already exists
             const checkDuplication = await MenusDAO.getMenu(name)
+            console.log(checkDuplication)
 
             //if not
             if (!checkDuplication) {
@@ -33,23 +34,32 @@ export default class MenuController{
 
     static async apiUpdateMenu(req, res) {
         try {
-            const rename = req.body.rename
-            const checkMenuNameDuplication = await MenusDAO.getMenu(rename)
+            const name = req.body.name
+            let rename = req.body.name
 
-            //if Menu name does not exist
-            if (!checkMenuNameDuplication.length) {
-                await MenusDAO.updateMenu(
-                    req.body.name,
-                    rename,
-                    req.body.price,
-                    req.body.image
-                )
-            }
-            //if exists then return status json
-            else {
-                return res.json({ status: "Menu name already exists" })
-            }
+            // if rename is passed, check duplication
+            if (req.body.rename) {
+                rename = req.body.rename
+                const checkMenuNameDuplication = await MenusDAO.getMenu(rename)
 
+                //if Menu name does exist
+                if (checkMenuNameDuplication.length) {
+                    return res.json({ status: "Menu name already exists" })
+                }
+            }
+            const menu = await MenusDAO.getMenu(name)
+
+            // if price and image are not passed, then get information from original menu
+            const price = req.body.price ? req.body.price : menu.price
+            const image = req.body.image ? req.body.image : menu.image
+            
+            await MenusDAO.updateMenu(
+                name,
+                rename,
+                price,
+                image
+            )
+            
             res.json({ status: 'success'})
         } catch (err) {
             res.status(400).json({ error: err })
@@ -60,7 +70,7 @@ export default class MenuController{
         try {
             let Menus = await MenusDAO.getAllMenus()
 
-            //return Menus list
+            //return menus list
             res.json(Menus)
         } catch (err) {
             res.status(400).json({ error: err })
@@ -72,7 +82,7 @@ export default class MenuController{
             const name = req.body.name
             let Menus = await MenusDAO.getMenus(name)
 
-            //return filtered Menus list
+            //return filtered menus list
             res.json(Menus)
         } catch (err) {
             res.status(400).json({ error: err })
@@ -85,7 +95,7 @@ export default class MenuController{
 
             const checkMenu = await MenusDAO.getMenu(name)
 
-            //check whether the Menu exists
+            //check whether the menu exists
             if (checkMenu) {
                 await MenusDAO.deleteMenu(name)
 
