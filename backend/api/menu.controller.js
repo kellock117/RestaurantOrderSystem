@@ -1,17 +1,23 @@
 import MenusDAO from "../dao/menusDAO.js"
+import ImagesDAO from "../dao/imagesDAO.js"
 
 export default class MenuController{
     static async apiCreateMenu(req, res) {
         try {
             const name = req.body.name
+
             //check if menu already exists
             const checkDuplication = await MenusDAO.getMenu(name)
+            
+            if (req.files.length <= 0) {
+                return res.json({ status: "You must select a file." })
+            }
 
             //if not
             if (!checkDuplication) {
                 const price = req.body.price
-                const image = req.body.image
-
+                const image = req.files.map(e => e.filename)
+                
                 //access to database
                 await MenusDAO.createMenu(
                     name,
@@ -49,7 +55,7 @@ export default class MenuController{
 
             // if price and image are not passed, then get information from original menu
             const price = req.body.price ? req.body.price : menu.price
-            const image = req.body.image ? req.body.image : menu.image
+            const image = req.body.image ? req.files.map(e => e.filename) : menu.image
             
             await MenusDAO.updateMenu(
                 name,
@@ -66,22 +72,30 @@ export default class MenuController{
 
     static async apiViewMenu(_req, res) {
         try {
-            let Menus = await MenusDAO.getAllMenus()
-
+            let menus = await MenusDAO.getAllMenus()
+            
+            for (const menu of menus) {
+                await ImagesDAO.downloadImages(menu)
+            }
+    
             //return menus list
-            res.json(Menus)
+            res.json(menus)
         } catch (err) {
-            res.status(400).json({ error: err })
+            res.status(400).json({ error: err.message })
         }
     }
 
     static async apiSearchMenu(req, res) {
         try {
             const name = req.body.name
-            let Menus = await MenusDAO.getMenus(name)
+            const menus = await MenusDAO.getMenus(name)
+
+            for (const menu of menus) {
+                await ImagesDAO.downloadImages(menu)
+            }
 
             //return filtered menus list
-            res.json(Menus)
+            res.json(menus)
         } catch (err) {
             res.status(400).json({ error: err })
         }

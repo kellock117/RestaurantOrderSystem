@@ -5,6 +5,7 @@ import dotenv from "dotenv"
 import UsersDAO from "./dao/usersDAO.js"
 import MenusDAO from "./dao/menusDAO.js"
 import PromotionsDAO from "./dao/promotionsDAO.js"
+import ImagesDAO from "./dao/imagesDAO.js"
 
 dotenv.config()
 const MongoClient = mongodb.MongoClient
@@ -16,8 +17,9 @@ MongoClient.connect(
   {
     maxPoolSize: 50,
     wtimeoutMS: 2500,
-    useNewUrlParser: true }
-  )
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+  })
   .catch(err => {
     console.error(err.stack)
     process.exit(1)
@@ -26,6 +28,7 @@ MongoClient.connect(
     await UsersDAO.injectDB(client)
     await PromotionsDAO.injectDB(client)
     await MenusDAO.injectDB(client)
+    await ImagesDAO.injectDB(client)
     
     app.listen(port, () => {
       console.log(`listening on port ${port}`)

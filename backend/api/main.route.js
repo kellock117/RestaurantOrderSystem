@@ -3,7 +3,9 @@ import UserCtrl from "./user.controller.js"
 import LoginCtrl from "./login.controller.js"
 import MenuCtrl from "./menu.controller.js"
 import PromotionCtrl from "./promotion.controller.js"
+import Multer from "./multer.js"
 import Path from "path"
+
 const __dirname = Path.resolve()
 
 const router = express.Router()
@@ -60,12 +62,12 @@ router
 
 //----------------------------------manager----------------------------------
 router.get("/manager", function(_req, res) {
-  res.send("<h1>Manager</h1>")
+  res.sendFile(Path.join(__dirname, '../frontend/manager.html'))
 })
 
 router
   .route("/manager/createMenu")
-  .post(MenuCtrl.apiCreateMenu)
+  .post(Multer.array("files", 10), MenuCtrl.apiCreateMenu)
 
 router
   .route("/manager/viewMenu")
@@ -132,5 +134,8 @@ router
 router
   .route('owner/userinfo')
   .get(UserCtrl.apiGetUserInfo)
+
+
+
 
 export default router
