@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MANAGER</title>
+</head>
+<body>
+    <div class="main-container"></div>
+        <div class="form-container">
+            <div class="form-body">
+            <h1>create menu</h1>
+            <form class="the-form" enctype="multipart/form-data">
+                <label>name: <input type="text" id="name" required placeholder="Enter menu"/> </label> <br/>
+                <label>price: <input type="text" id="price" required placeholder="Enter price"/></label> <br/>
+                <input type="file" name="files" id="files" multiple>
+                <button onclick="createMenu()" type="submit" "Create">Create</button>
+            </form>
+        </div> 
+    </div>
+    <script>
+        function createMenu() {
+            var files = document.getElementById("files")
+            var data = new FormData()
+            data.append('name', document.getElementById("name").value)
+            data.append('price', document.getElementById("price").value)
+
+            for(let i = 0; i < files.files.length; i++) {
+                data.append("files", files.files[i])
+            }
+
+            fetch("http://localhost:5000/manager/createMenu", {
+                method: "POST",
+                body: data
+            }).then((response) => response.json())
+            .then((data) => {
+                console.log(data)
+            })
+        }
+    </script>
+</body>
+</html>
