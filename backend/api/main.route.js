@@ -3,6 +3,7 @@ import UserCtrl from "./user.controller.js"
 import LoginCtrl from "./login.controller.js"
 import MenuCtrl from "./menu.controller.js"
 import PromotionCtrl from "./promotion.controller.js"
+import OrderCtrl from "./order.controller.js"
 import Multer from "./multer.js"
 import Path from "path"
 
@@ -21,33 +22,19 @@ router
   })
 
 //admin create, view, update, delete function
-router
-  .route('/admin/create')
-  .post(UserCtrl.apiCreateUser)
+router.post('/admin/create', UserCtrl.apiCreateUser)
 
-router
-  .route('/admin/view')
-  .get(UserCtrl.apiViewUser)
+router.get('/admin/view', UserCtrl.apiViewUser)
 
-router
-  .route('/admin/search')  
-  .get(UserCtrl.apiSearchUser)
+router.get('/admin/search', UserCtrl.apiSearchUser)
 
-router
-  .route('/admin/update')  
-  .put(UserCtrl.apiUpdateUser)
+router.put('/admin/update', UserCtrl.apiUpdateUser)
 
-router
-  .route('/admin/delete')  
-  .delete(UserCtrl.apiDeleteUser)
+router.delete('/admin/delete', UserCtrl.apiDeleteUser)
 
-router
-  .route('admin/logout')
-  .get(LoginCtrl.apiLogout)
+router.get('/admin/logout', LoginCtrl.apiLogout)
 
-router
-  .route('admin/userinfo')
-  .get(UserCtrl.apiGetUserInfo)
+router.get('/admin/userinfo', UserCtrl.apiGetUserInfo)
 
 //----------------------------------main----------------------------------
 router
@@ -65,77 +52,71 @@ router.get("/manager", function(_req, res) {
   res.sendFile(Path.join(__dirname, '../frontend/manager.html'))
 })
 
-router
-  .route("/manager/createMenu")
-  .post(Multer.array("files", 10), MenuCtrl.apiCreateMenu)
+router.post("/manager/createMenu", Multer.array("files", 10), MenuCtrl.apiCreateMenu)
 
-router
-  .route("/manager/viewMenu")
-  .get(MenuCtrl.apiViewMenu)
+router.get("/manager/viewMenu", MenuCtrl.apiViewMenu)
 
-router
-  .route("/manager/searchMenu")
-  .get(MenuCtrl.apiSearchMenu)
+router.get("/manager/searchMenu", MenuCtrl.apiSearchMenu)
 
-router
-  .route("/manager/updateMenu")
-  .put(MenuCtrl.apiUpdateMenu)
+router.put("/manager/updateMenu", MenuCtrl.apiUpdateMenu)
 
-router
-  .route("/manager/deleteMenu")
-  .delete(MenuCtrl.apiDeleteMenu)
+router.delete("/manager/deleteMenu", MenuCtrl.apiDeleteMenu)
 
-  router
-  .route("/manager/createPromotion")
-  .post(PromotionCtrl.apiCreatePromotion)
+router.post("/manager/createPromotion", PromotionCtrl.apiCreatePromotion)
 
-router
-  .route("/manager/viewPromotion")
-  .get(PromotionCtrl.apiViewPromotion)
+router.get("/manager/viewPromotion", PromotionCtrl.apiViewPromotion)
 
-router
-  .route("/manager/updatePromotion")
-  .put(PromotionCtrl.apiUpdatePromotion)
+router.put("/manager/updatePromotion", PromotionCtrl.apiUpdatePromotion)
 
-router
-  .route("/manager/deletePromotion")
-  .delete(PromotionCtrl.apiDeletePromotion)
+router.delete("/manager/deletePromotion", PromotionCtrl.apiDeletePromotion)
 
-router
-  .route('manager/logout')
-  .get(LoginCtrl.apiLogout)
+router.get('/manager/logout', LoginCtrl.apiLogout)
 
-router
-  .route('manager/userinfo')
-  .get(UserCtrl.apiGetUserInfo)
+router.get('/manager/userinfo', UserCtrl.apiGetUserInfo)
+
 //----------------------------------staff----------------------------------
 
-router.get("/staff", function(res) {
+router.get("/staff", function(_req, res) {
   res.send("<h1>staff</h1>")
 })
 
 router
-  .route('staff/logout')
+  .route('/staff/logout')
   .get(LoginCtrl.apiLogout)
 
 router
-  .route('staff/userinfo')
+  .route('/staff/userinfo')
   .get(UserCtrl.apiGetUserInfo)
+
 //----------------------------------owner----------------------------------
 
-router.get("/owner", function(res) {
+router.get("/owner", function(_req, res) {
   res.send("<h1>owner</h1>")
 })
 
 router
-  .route('owner/logout')
+  .route('/owner/logout')
   .get(LoginCtrl.apiLogout)
 
 router
-  .route('owner/userinfo')
+  .route('/owner/userinfo')
   .get(UserCtrl.apiGetUserInfo)
 
 
+//----------------------------------customer----------------------------------
 
+router.get("/customer", function(_req, res) {
+  res.sendFile(Path.join(__dirname, '../frontend/customer.html'))
+})
+
+router.get('/customer/viewMenu', MenuCtrl.apiViewMenu)
+
+router.get('/customer/searchMenu', MenuCtrl.apiSearchMenu)
+
+router.post('/customer/createOrder', OrderCtrl.apiCreateOrder)
+
+router.get('/customer/viewOrder', OrderCtrl.apiViewOrder)
+
+router.put('/customer/payOrder', OrderCtrl.apiPayOrder)
 
 export default router
