@@ -118,10 +118,4 @@ export default class UserController{
             res.status(400).json({ error: err })
         }
     }
-
-    // checkValidation() {
-    //     if (User.role !== "admin") {
-    //         return res.status(400).json({ status: "bad request" })
-    //     }
-    // }
 }

@@ -5,7 +5,6 @@ export default class LoginController {
         try {
             const id = req.body.id
             const password = req.body.password
-            console.log(id, password)
             
             const checkAccount = await UsersDAO.getUserById(id)
     

@@ -104,18 +104,13 @@ export default class MenuController{
     static async apiDeleteMenu(req, res) {
         try {
             const name = req.body.name
+            const menuInfo = await MenusDAO.getMenu(name)
+            const fileID = await ImagesDAO.getFileID(menuInfo.image)
 
-            const checkMenu = await MenusDAO.getMenu(name)
+            await ImagesDAO.deleteImage(fileID)
+            await MenusDAO.deleteMenu(name)
 
-            //check whether the menu exists
-            if (checkMenu) {
-                await MenusDAO.deleteMenu(name)
-
-                res.json({ status: 'success'})
-            }
-            else {
-                res.json({ status: 'Menu does not exist' })
-            }
+            res.json({ status: 'success'})
         } catch (err) {
             res.status(400).json({ error: err })
         }

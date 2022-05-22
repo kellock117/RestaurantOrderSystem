@@ -66,6 +66,18 @@ export default class PromotionController{
         }
     }
 
+    static async apiSearchromotion(req, res) {
+        try {
+            const code = req.body.code
+            let users = await PromotionsDAO.getPromotion(code)
+
+            //return users list
+            res.json(users)
+        } catch (err) {
+            res.status(400).json({ error: err })
+        }
+    }
+
     static async apiDeletePromotion(req, res) {
         try {
             const code = req.body.code

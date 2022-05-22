@@ -18,7 +18,7 @@ app.use(BodyParser.json())
 
 // app.use(((req, res, next) => {
 //     //when it is not logged in and url is main or admin page then redirect to main page
-//     if (!User.loggedIn && req.url != "/") {
+//     if (!User.loggedIn && req.url != "/" && req.url != "/customer") {
 //         res.redirect(process.env.MAIN_PAGE)
 //     }
 //     //when it is logged in and 

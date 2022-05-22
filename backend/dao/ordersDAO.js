@@ -1,3 +1,5 @@
+import { ObjectId } from "mongodb"
+
 export default class OrdersDAO {
     constructor() {
         this.orders = null
@@ -14,12 +16,14 @@ export default class OrdersDAO {
         }
     }
 
-    static async createOrder(tableNumber, menus, totalAmount, paid) {
+    static async createOrder(tableNumber, menus, totalAmount, date, confirmed, paid) {
         try {
             const orderDoc = {
                 tableNumber: tableNumber,
                 menus: menus,
                 totalAmount: totalAmount,
+                date: date,
+                confirmed: confirmed,
                 paid: paid
             }
 
@@ -30,37 +34,89 @@ export default class OrdersDAO {
         }
     }
 
-    static async getOrders(tableNumber) {
+    static async searchOrder(tableNumber) {
         try {
             return await this.orders.find({ 
                 tableNumber: tableNumber,
                 paid: false
-             })
+             }).toArray()
         } catch (err) {
             console.log(`Unable to get order: ${err.message}`)
             return { error: err }
         }
     }
 
-    static async getAllOrders() {
+    static async getOrders(tableNumber) {
         try {
-            return await this.orders.find({ paid: false }).toArray()
+            const filter = { 
+                tableNumber: tableNumber,
+                confirmed: true,
+                paid: false
+            }
+
+            return await this.orders.find(filter).toArray()
         } catch (err) {
             console.log(`Unable to get all orders: ${err.message}`)
             return { error: err }
         }
     }
 
-    static async updateOrder(tableNumber) {
+    static async getUnconfirmedOrders() {
         try {
-            const filter = { tableNumber: tableNumber }
-            const updateDoc = {
-                $set: { paid: true }
-            }
-
-            return await this.orders.updateMany(filter, updateDoc)
+            return await this.orders.find({ confirmed: false }).toArray()
         } catch (err) {
+            console.log(`Unable to get unconfirmed orders: ${err.message}`)
+            return { error: err }
+        }
+    }
 
+    static async getAllOrders() {
+        try {
+            return await this.orders.find().toArray()
+        } catch (err) {
+            console.log(`Unable to get all orders: ${err.message}`)
+            return { error: err }
+        }
+    }
+
+    static async confirmOrder(id) {
+        try {
+            const filter = { _id: ObjectId(id) }
+            let updateDoc = { $set: { confirmed: true } }
+
+            return await this.orders.updateOne(filter, updateDoc)
+        } catch (err) {
+            console.log(`Unable to update menu: ${err.message}`)
+            return { error: err.message }
+        }
+    }
+
+    static async deleteOrder(tableNumber) {
+        try {
+            const query = { 
+                tableNumber: tableNumber,
+                confirmed: false
+            }
+            
+            return await this.orders.deleteOne(query)
+        } catch (err) {
+            console.log(`Unable to delete order: ${err.message}`)
+            return { error: err }
+        }
+    }
+
+    static async deleteOrders(tableNumber) {
+        try {
+            const query = { 
+                tableNumber: tableNumber,
+                confirmed: true,
+                paid: false
+            }
+            
+            return await this.orders.deleteMany(query)
+        } catch (err) {
+            console.log(`Unable to delete order: ${err.message}`)
+            return { error: err }
         }
     }
 }
