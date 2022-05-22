@@ -95,8 +95,14 @@ router.get("/staff", function(_req, res) {
   res.send("<h1>staff</h1>")
 })
 
+// ()
+router.get("/staff/viewOrder", OrderCtrl.apiViewUnconfirmedOrder)
+
 // (tableNumber)
 router.get("/staff/searchOrder", OrderCtrl.apiSearchOrder)
+
+// (_id)
+router.put("/staff/confirmOrder", OrderCtrl.apiUpdateOrder)
 
 // (tableNumber)
 router.delete("/staff/cancelOrder", OrderCtrl.apiDeleteOrder)
@@ -113,14 +119,11 @@ router.get("/owner", function(_req, res) {
   res.send("<h1>owner</h1>")
 })
 
-router
-  .route('/owner/logout')
-  .get(LoginCtrl.apiLogout)
+router.get("/owner/viewOrder", OrderCtrl.apiViewAllOrder)
 
-router
-  .route('/owner/userinfo')
-  .get(UserCtrl.apiGetUserInfo)
+router.get('/owner/logout', LoginCtrl.apiLogout)
 
+router.get('/owner/userinfo', UserCtrl.apiGetUserInfo)
 
 //----------------------------------customer----------------------------------
 
@@ -138,9 +141,12 @@ router.get('/customer/searchMenu', MenuCtrl.apiSearchMenu)
 router.post('/customer/createOrder', OrderCtrl.apiCreateOrder)
 
 // (tableNumber)
-router.get('/customer/viewOrder', OrderCtrl.apiViewOrder)
+router.get('/customer/viewOrder', OrderCtrl.apiSearchOrder)
 
 // (tableNumber, code = None) promotion code
 router.put('/customer/payOrder', OrderCtrl.apiPayOrder)
+
+// (tableNumber)
+router.delete('/customer/cancelOrder', OrderCtrl.apiDeleteOrder)
 
 export default router
