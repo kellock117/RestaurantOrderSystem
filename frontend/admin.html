@@ -4,30 +4,122 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Main</title>
+
 </head>
+<style>
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+    
+    .topnav {
+      overflow: hidden;
+      background-color: #333;
+    }
+    
+    .topnav a {
+      float: left;
+      color: #f2f2f2;
+      text-align: center;
+      padding: 14px 16px;
+      text-decoration: none;
+      font-size: 17px;
+    }
+    
+    .topnav a:hover {
+      background-color: #ddd;
+      color: black;
+    }
+    
+    .topnav a.active {
+      background-color: #04AA6D;
+      color: white;
+    }
+    </style>
 <body>
     <h1>Admin Main</h1>
-    <div class="container">
-        <div class="navbar">
-            <!-- 1. -->
-            <ul class="nav nav-ul">
-                <li class="create user">Create User</li>
-                <li class="user list">View</li>
-                <li class="user name"> </li>
-                <li class="logout">
-                    <form method="get" action="/logout">
-                        <input type="submit" value="Logout">
-                    </form>
-                </li>
-            </ul>
-        </div>
-        <div class="pages">
-            <!-- 2. -->
-        </div>
-    </div>
+        <div class="topnav">
+            <a id = "createuser" class="active">Create User</a>
+            <a id = "viewuser">View Users</a>
+            <a id = "logout">Logout</a>
+          </div>
+          <div>
+            <j id = "pg1">
+                <label>Id: <input type="text" id="idNo" /> </label> <br/>
+                <label>Username: <input type="text" id="username" /> </label> <br/>
+                <label>Password: <input type="password" id="password"/></label> <br/>
+                <label for="role">Select Role</label><br />
+                <input type="radio" id="role" name="role" value="admin">
+                <label for="admin">admin</label><br>
+                <input type="radio" id="role" name="role" value="manager">
+                <label for="manager">manager</label><br>
+                <input type="radio" id="role" name="role" value="staff">
+                <label for="staff">staff</label><br>
+                <input type="radio" id="role" name="role" value="owner" checked>
+                <label for="owner">owner</label><br>
+                <button onclick="CreateUser()" type="submit" value="Create User">Create User</button>
+            </j>
+            <jj id = "pg2">
+                <div id = "userlist">
+
+                </div>
+            </jj>
+          </div>
+
+
     <script>
-        document.getElementsByClassName('user name')[0].innerHTML = "User Name: "
+        document.getElementById("viewuser").addEventListener("click", function(){
+            document.getElementById("createuser").className = " ";
+            document.getElementById("viewuser").className = "active";
+            document.getElementById("logout").className =" ";
+            var x = document.getElementById("pg1");
+            var z = document.getElementById("pg2");
+            x.style.display = "none";
+            z.style.display = "block";
+
+        } );
+        
+        document.getElementById("logout").addEventListener("click", function() {
+            document.getElementById("createuser").className = " ";
+            document.getElementById("viewuser").className = " ";
+            document.getElementById("logout").className ="active";
+            var x = document.getElementById("pg1");
+            var z = document.getElementById("pg2");
+            x.style.display = "none";
+            z.style.display = "none";
+            fetch("htt[://localhost:5000/admin/logout", {
+                method: "get"
+            })
+            location.replace("http://localhost:5000/")
+        } );
+
+        function CreateUser() {
+            fetch("http://localhost:5000/admin/create", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    id: document.getElementById("idNo").value,
+                    password: document.getElementById("password").value,
+                    userName: document.getElementById("username").value,
+                    role: document.getElementById("role").value
+                })
+            }).then((response) => response.json())
+            .then((data) => {
+                console.log(data)
+
+                if (data.status === 'success'){
+                    window.alert("Account Created Successfully")
+                }
+                else if (data.status === 'user name already exists'){
+                    window.alert("Username already exists please try again")
+                }
+                else if (data.status === 'ID already exists'){
+                    window.alert("ID number already exists please try again")
+                }
+            })
+        }
     </script>
 </body>
 </html>
@@ -43,11 +135,9 @@
             "userName": null,
             "role": null
         }
-
     2. if you click each nav bar then hided page will be shown. if you click other then hide current one, and
         make structure for each option, for example, create session needs id, password, user name blank and option which can select role.
         For user list session, I'll use filter for search function, ask me if you are doing this, I'll send you sample image.
-
     3. If you want want to know what REST api request you need to send, refer "api/main.route.js " file and check route("admin/api")
         if you want to know what each middleware return then check "api/admin.controller.js"
  -->

@@ -24,7 +24,7 @@
             <form action="" class="the-form">
                 <label>Username: <input type="text" id="id" required placeholder="Enter your Username"/> </label> <br/>
                 <label>Password: <input type="password" id="password" required placeholder="Enter your password"/></label> <br/>
-                <button onclick="logInStatus()" type="submit" value="Log In">Log In</button>
+                <button onclick="logInStatus()" value="Log In">Log In</button>
             </form>
             <div class="form-footer">
                 <div>
@@ -48,7 +48,7 @@
             }).then((response) => response.json())
             .then((data) => {
                 if (data.status === 'success') {
-                    location.replace("http://localhost:5000/" + data.role)
+                    location.location("http://localhost:5000/" + data.role)
                 }
                 else if (data.status === 'incorrect password') {
                     window.alert("Password is incorrect. Please try again")
@@ -61,9 +61,3 @@
     </script>
 </body>
 </html>
-
-<!-- 
-    1. decorate a bit
-    2. User enters wrong credentials (username), system displays an error message
-    3. User enters wrong credentials (password), system displays an error message
--->

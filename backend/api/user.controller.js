@@ -4,6 +4,7 @@ export default class UserController{
     static async apiCreateUser(req, res) {
         try {
             const id = req.body.id
+            console.log(id)
 
             //check if user already exists
             const checkIdDuplication = await UsersDAO.getUserById(id)
