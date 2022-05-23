@@ -107,7 +107,10 @@
             z.style.display = "block";
             a.style.display = "none";
             fetch("htt[://localhost:5000/admin/view", {
-                method: "get"
+                method: "get",
+                 headers: {
+                    "Content-Type": "application/json"
+                }
             }).then((response) => response.json())
             .then((data) => {
                 for (row = 0; row < data.length; row++){
@@ -185,6 +188,9 @@
         function CreateUser() {
             fetch("http://localhost:5000/admin/create", {
                 method: "POST",
+                 headers: {
+                    "Content-Type": "application/json"
+                },
                 body: JSON.stringify({
                     id: document.getElementById("idNo").value,
                     password: document.getElementById("password").value,
@@ -209,6 +215,9 @@
         function DeleteUser() {
             fetch("http://localhost:5000/admin/delete", {
                 method: "DELETE",
+                 headers: {
+                    "Content-Type": "application/json"
+                },
                 body: JSON.stringify({
                     id: document.getElementById("Delete").value
                 })
