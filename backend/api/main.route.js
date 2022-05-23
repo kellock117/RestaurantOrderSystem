@@ -26,7 +26,7 @@ router.post('/admin/create', UserCtrl.apiCreateUser)
 router.get('/admin/view', UserCtrl.apiViewUser)
 
 // (filter: "userName" || "role", value)
-router.get('/admin/search', UserCtrl.apiSearchUser)
+router.post('/admin/search', UserCtrl.apiSearchUser)
 
 // (id, password) => update account || (id, userName, role) => update profile
 router.put('/admin/update', UserCtrl.apiUpdateUser)
@@ -63,7 +63,7 @@ router.post("/manager/createMenu", Multer.array("files", 10), MenuCtrl.apiCreate
 router.get("/manager/viewMenu", MenuCtrl.apiViewMenu)
 
 // (name)
-router.get("/manager/searchMenu", MenuCtrl.apiSearchMenu)
+router.post("/manager/searchMenu", MenuCtrl.apiSearchMenu)
 
 // (name, rename = None, price = None, image = None)
 router.put("/manager/updateMenu", MenuCtrl.apiUpdateMenu)
@@ -99,7 +99,7 @@ router.get("/staff", function(_req, res) {
 router.get("/staff/viewOrder", OrderCtrl.apiViewUnconfirmedOrder)
 
 // (tableNumber)
-router.get("/staff/searchOrder", OrderCtrl.apiSearchOrder)
+router.post("/staff/searchOrder", OrderCtrl.apiSearchOrder)
 
 // (_id)
 router.put("/staff/confirmOrder", OrderCtrl.apiUpdateOrder)
@@ -135,13 +135,13 @@ router.get("/customer", function(_req, res) {
 router.get('/customer/viewMenu', MenuCtrl.apiViewMenu)
 
 // (name)
-router.get('/customer/searchMenu', MenuCtrl.apiSearchMenu)
+router.post('/customer/searchMenu', MenuCtrl.apiSearchMenu)
 
 // (tableNumber, menus: array of menu object: { name, quantity: integer })
 router.post('/customer/createOrder', OrderCtrl.apiCreateOrder)
 
 // (tableNumber)
-router.get('/customer/viewOrder', OrderCtrl.apiSearchOrder)
+router.post('/customer/viewOrder', OrderCtrl.apiSearchOrder)
 
 // (tableNumber, code = None) promotion code
 router.put('/customer/payOrder', OrderCtrl.apiPayOrder)

@@ -122,10 +122,12 @@
 
 
     <script>
-        let info = null
-        const navInfo = ["createuser", "viewuser", "searchuser", "updateuser", "deleteuser"]
+        let info = null        
+        let viewLength = 0
+        let searchLength = 0
 
         function ChangeEffect(func) {
+            const navInfo = ["createuser", "viewuser", "searchuser", "updateuser", "deleteuser"]
             document.getElementById(func).className = "active"
             
             for (const e in navInfo) {
@@ -143,20 +145,27 @@
         } )
 
         document.getElementById("viewuser").addEventListener("click", function(){
-            ChangeEffect("viewuser")
-            if (info == null) {
-                fetch("http://localhost:5000/admin/view", {
-                method: "GET",
-                })
-                .then((response) => response.json())
-                .then((data) => {
-                    info = data
-                    ViewUser()
-                })
+            const table = document.getElementById("view userList")
+            for (let i = 0; i < viewLength; i++) {
+                table.deleteRow(-1)
             }
+            ChangeEffect("viewuser")
+
+            fetch("http://localhost:5000/admin/view", {
+            method: "GET",
+            })
+            .then((response) => response.json())
+            .then((data) => {
+                info = data
+                ViewUser()
+            })
         } )
 
         document.getElementById("searchuser").addEventListener("click", function() {
+            const table = document.getElementById("search userList")
+            for (let i = 0; i < searchLength; i++) {
+                table.deleteRow(-1)
+            }
             ChangeEffect("searchuser")
         } )
 
@@ -221,13 +230,15 @@
                     cell.innerText = element[e]
                 }
             }
+
+            viewLength = info.length
         }
 
         function SearchUser() {
             const infoList = ["id", "password", "userName", "role"]
-            const table = document.getElementById("serach userList")
-            const filter = document.getElementById("filter")
-            const value = document.getElementById("search value")
+            const table = document.getElementById("search userList")
+            const filter = document.getElementById("filter").value
+            const value = document.getElementById("search value").value
 
             if (value == "" ) {
                 window.alert("Please fill in the blank")
@@ -235,7 +246,7 @@
             }
 
             fetch("http://localhost:5000/admin/search", {
-                method: "GET",
+                method: "POST",
                 headers: {
                     "Content-Type": "application/json"
                 },
@@ -254,6 +265,8 @@
                         cell.innerText = element[e]
                     }
                 }
+
+                searchLength = data.length
             })
         }
 
