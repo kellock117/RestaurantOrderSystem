@@ -47,14 +47,12 @@
             <j id = "pg1">
                 <label>Id: <input type="text" id="idNo" /> </label> <br/>
                 <label>Username: <input type="text" id="username" /> </label> <br/>
-                <label>Password: <input type="text" id="password"/></label> <br/>
+                <label>Password: <input type="password" id="password"/></label> <br/>
                 <label for="role">Select Role</label><br />
                 <input type="radio" id="role" name="role" value="admin">
                 <label for="admin">admin</label><br>
                 <input type="radio" id="role" name="role" value="manager">
                 <label for="manager">manager</label><br>
-                <input type="radio" id="role" name="role" value="customer">
-                <label for="customer">customer</label><br>
                 <input type="radio" id="role" name="role" value="staff">
                 <label for="staff">staff</label><br>
                 <input type="radio" id="role" name="role" value="owner" checked>
@@ -80,21 +78,7 @@
             z.style.display = "block";
 
         } );
-        document.getElementById("createuser").addEventListener("click", function() {
-            document.getElementById("createuser").className = "active ";
-            document.getElementById("viewuser").className = "";
-            document.getElementById("logout").className =" ";
-            var x = document.getElementById("pg1");
-            var z = document.getElementById("pg2");
-            x.style.display = "block";
-            z.style.display = "none";
-            fetch("htt[://localhost:5000/admin/view", {
-                method: "get"
-            }).then((response) => response.json())
-            .then((data) => {
-                document.getElementById("userlist") = data
-            })
-        } );
+        
         document.getElementById("logout").addEventListener("click", function() {
             document.getElementById("createuser").className = " ";
             document.getElementById("viewuser").className = " ";
@@ -110,49 +94,32 @@
         } );
 
         function CreateUser() {
-            var data = new FormData()
-            data.append('id', document.getElementById("idNo").value)
-            data.append('password', document.getElementById("password").value)
-            data.append('username', document.getElementById("username").value)
-            data.append('role', document.getElementById("role").value)
-
             fetch("http://localhost:5000/admin/create", {
                 method: "POST",
-                body: data
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    id: document.getElementById("idNo").value,
+                    password: document.getElementById("password").value,
+                    userName: document.getElementById("username").value,
+                    role: document.getElementById("role").value
+                })
             }).then((response) => response.json())
             .then((data) => {
+                console.log(data)
+
                 if (data.status === 'success'){
                     window.alert("Account Created Successfully")
                 }
-                if (data.status === 'user name already exists'){
+                else if (data.status === 'user name already exists'){
                     window.alert("Username already exists please try again")
                 }
-                if (data.status === 'ID already exists'){
+                else if (data.status === 'ID already exists'){
                     window.alert("ID number already exists please try again")
                 }
-
             })
         }
     </script>
 </body>
 </html>
-
-<!-- 
-    1. need to decorate navigation bar with option -Create User, User List(this is for view, search, update, delete),
-        logout(upper right side), and user name left of logout
-        you can get user info by sending REST API get request to localhost:5000/userinfo then json file would be returned
-        
-        {
-            "loggedIn": false,
-            "id": null,
-            "userName": null,
-            "role": null
-        }
-
-    2. if you click each nav bar then hided page will be shown. if you click other then hide current one, and
-        make structure for each option, for example, create session needs id, password, user name blank and option which can select role.
-        For user list session, I'll use filter for search function, ask me if you are doing this, I'll send you sample image.
-
-    3. If you want want to know what REST api request you need to send, refer "api/main.route.js " file and check route("admin/api")
-        if you want to know what each middleware return then check "api/admin.controller.js"
- -->
