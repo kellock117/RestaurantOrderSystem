@@ -12,6 +12,16 @@
       font-family: Arial, Helvetica, sans-serif;
     }
     
+    table {
+    width: 100%;
+    border: 1px solid #444444;
+    border-collapse: collapse;
+    }
+    
+    th, td {
+        border: 1px solid #444444;
+    }
+
     .topnav {
       overflow: hidden;
       background-color: #333;
@@ -47,17 +57,133 @@
             <a id = "logout">Logout</a>
           </div>
           <div>
+            <!-- create user -->
+            <div id = "pg0">
+                <label>Id: <input type="text" id="idNo" placeholder="Enter ID"/> </label> <br/>
+                <label>Username: <input type="text" id="username" placeholder="Enter Username"/> </label> <br/>
+                <label>Password: <input type="password" id="password"placeholder="Enter Password"/></label> <br/>
+                <label for="role">Select Role</label><br />
+                <label><input type="radio" id="role" name="role" value="manager" checked="checked">manager</label><br>
+                <label><input type="radio" id="role" name="role" value="staff">staff</label><br>
+                <label><input type="radio" id="role" name="role" value="owner">owner</label><br>
+                <button onclick="CreateUser()">Create</button>
+            </div>
+            
+            <!-- view user -->
+            <div id = "pg1" style="display: none">
+                <table id="view userList">
+                    <tr>
+                        <th>ID</th><th>PASSWORD</th><th>USER NAME</th><th>ROLE</th>
+                    </tr>
+                </table>
+            </div>
 
+            <!-- search user -->
+            <div id="pg2" style="display: none">
+                <div class="filter">
+                    <select id="filter">
+                        <option value="role">Role</option>
+                        <option value="userName">User Name</option>
+                    </select>
+                    <input type="text" id="search value" placeholder="Enter value"/>
+                    <button onclick="SearchUser()">Search</button>
+                </div>
+                <table id="search userList">
+                    <tr>
+                        <th>ID</th><th>PASSWORD</th><th>USER NAME</th><th>ROLE</th>
+                    </tr>
+                </table>
+            </div>
+
+            <!-- update user -->
+            <div id="pg3" style="display: none">
+                <div class="update account">
+                    <label>Id: <input type="text" id="uaid" placeholder="Enter ID"/> </label> <br/>
+                    <label>New Password: <input type="password" id="uapassword" placeholder="Enter New Password"/></label> <br/>
+                    <button onclick="UpdateAccount()">Update</button>
+                </div>
+                <div class="update profile">
+                    <label>Id: <input type="text" id="upid" placeholder="Enter ID"/> </label> <br/>
+                    <label>Username: <input type="text" id="upusername" placeholder="Enter New Username"/> </label> <br/>
+                    <label for="uprole">Select New Role</label><br />
+                    <label><input type="radio" id="uprole" name="uprole" value="manager" checked="checked">manager</label><br>
+                    <label><input type="radio" id="uprole" name="uprole" value="staff">staff</label><br>
+                    <label><input type="radio" id="uprole" name="uprole" value="owner">owner</label><br>
+                </div>
+                <button onclick="UpdateProfile()">Update</button>
+            </div>
+
+            <!-- delete user -->
+            <div id="pg4" style="display: none">
+                <label>Id:<input type="text" id="did" placeholder="Enter ID"/></label>
+                <button onclick="DeleteUser()">Delete</button>
+            </div>
           </div>
 
 
     <script>
+        let info = null
+        const navInfo = ["createuser", "viewuser", "searchuser", "updateuser", "deleteuser"]
 
+        function ChangeEffect(func) {
+            document.getElementById(func).className = "active"
+            
+            for (const e in navInfo) {
+                if (navInfo[e] == func) {
+                    document.getElementById(`pg${e}`).style.display = "block"
+                    continue
+                }
+                document.getElementById(navInfo[e]).className = " "
+                document.getElementById(`pg${e}`).style.display = "none"
+            }
+        }
+
+        document.getElementById("createuser").addEventListener("click", function() {
+            ChangeEffect("createuser")
+        } )
+
+        document.getElementById("viewuser").addEventListener("click", function(){
+            ChangeEffect("viewuser")
+            if (info == null) {
+                fetch("http://localhost:5000/admin/view", {
+                method: "GET",
+                })
+                .then((response) => response.json())
+                .then((data) => {
+                    info = data
+                    ViewUser()
+                })
+            }
+        } )
+
+        document.getElementById("searchuser").addEventListener("click", function() {
+            ChangeEffect("searchuser")
+        } )
+
+        document.getElementById("updateuser").addEventListener("click", function() {
+            ChangeEffect("updateuser")
+        } )
+
+        document.getElementById("deleteuser").addEventListener("click", function() {
+            ChangeEffect("deleteuser")
+        } )
+
+        document.getElementById("logout").addEventListener("click", function() {
             fetch("htt[://localhost:5000/admin/logout", {
                 method: "get"
             })
             location.replace("http://localhost:5000/")
+        } )
 
+        function CreateUser() {
+            const id = document.getElementById("idNo").value
+            const password = document.getElementById("password").value
+            const userName = document.getElementById("username").value
+
+            if (id == '' || password == '' || userName== '' ) {
+                window.alert("Please fill in the blank")
+                return
+            }
 
             fetch("http://localhost:5000/admin/create", {
                 method: "POST",
@@ -87,3 +213,130 @@
         function ViewUser() {
             const infoList = ["id", "password", "userName", "role"]
             const table = document.getElementById("view userList")
+
+            for (const element of info) {
+                const row = table.insertRow()
+                for (const e of infoList) {
+                    const cell = row.insertCell()
+                    cell.innerText = element[e]
+                }
+            }
+        }
+
+        function SearchUser() {
+            const infoList = ["id", "password", "userName", "role"]
+            const table = document.getElementById("serach userList")
+            const filter = document.getElementById("filter")
+            const value = document.getElementById("search value")
+
+            if (value == "" ) {
+                window.alert("Please fill in the blank")
+                return
+            }
+
+            fetch("http://localhost:5000/admin/search", {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    filter: filter,
+                    value: value
+                })
+            })
+            .then((response) => response.json())
+            .then((data) => {
+                for (const element of data) {
+                    const row = table.insertRow()
+
+                    for (const e of infoList) {
+                        const cell = row.insertCell()
+                        cell.innerText = element[e]
+                    }
+                }
+            })
+        }
+
+        function UpdateAccount() {
+            const id = document.getElementById("uaid").value
+            const password = document.getElementById("uapassword").value
+
+            if (id == '' || password == '') {
+                window.alert("Please fill in the blank")
+                return
+            }
+
+            fetch("http://localhost:5000/admin/update", {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    id: id,
+                    password: password
+                })
+            })
+            .then((response) => response.json())
+            .then((data) => {
+                if (data.status === 'success'){
+                    window.alert("Account updated successfully")
+                }
+                else if (data.status === 'id does not exist'){
+                    window.alert("Id does not exist")
+                }
+            })
+        }
+
+        function UpdateProfile() {
+            const id = document.getElementById("upid").value
+            const userName = document.getElementById("upusername").value
+            const role = document.querySelector('input[name="uprole"]:checked').value
+
+            fetch("http://localhost:5000/admin/update", {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    id: id,
+                    userName: userName,
+                    role: role
+                })
+            })
+            .then((response) => response.json())
+            .then((data) => {
+                if (data.status === 'success'){
+                    window.alert("Profile updated successfully")
+                }
+                else if (data.status === 'id does not exist'){
+                    window.alert("Id does not exist")
+                }
+                else if (data.status === 'user name already exists') {
+                    window.alert("User name already exists")
+                }
+            })
+        }
+
+        function DeleteUser() {
+            const id = document.getElementById("did").value
+
+            fetch("http://localhost:5000/admin/delete", {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    id: id
+                })
+            }).then((response) => response.json())
+            .then((data) => {
+                if (data.status === 'success'){
+                    window.alert("Account deleted successfully")
+                } else if (data.status === 'id does not exist'){
+                    window.alert("id does not exist")
+                }
+            }) 
+        }
+    </script>
+</body>
+</html>
