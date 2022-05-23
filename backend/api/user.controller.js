@@ -44,6 +44,11 @@ export default class UserController{
     static async apiUpdateUser(req, res) {
         try {
             const id = req.body.id
+            const checkId = await UsersDAO.getUserById(id)
+
+            if (!checkId) {
+                return res.json({ status: "id does not exist" })
+            }
 
             //if password is passed then change password
             if (req.body.password) {
@@ -54,13 +59,20 @@ export default class UserController{
             }
             //if userName or role are passed then change them
             else {
-                const userName = req.body.userName
-                const checkUserNameDuplication = await UsersDAO.getUserByFilter("userName", userName)
+                let userName = req.body.userName
+                let checkUserNameDuplication = await UsersDAO.getUserByFilter("userName", userName)
+
+                // if user does not pass userName
+                if (userName == '') {
+                    userName = checkId.userName
+                    checkUserNameDuplication = 1
+                }
 
                 //if user name does not exist
                 if (!checkUserNameDuplication.length) {
                     await UsersDAO.updateUser(
                         id,
+                        false,
                         userName,
                         req.body.role
                     )
@@ -103,6 +115,12 @@ export default class UserController{
     static async apiDeleteUser(req, res) {
         try {
             const id = req.body.id
+            const checkId = await UsersDAO.getUserById(id)
+
+            if (!checkId) {
+                return res.json({ status: "id does not exist" })
+            }
+            
             await UsersDAO.deleteUser(id)
 
             res.json({ status: 'success'})
