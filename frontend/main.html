@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MAIN</title>
-    <link rel="stylesheet" type="text/css" href="mainpage.css">
+    <link rel="stylesheet" type="text/css" href="../css/mainpage.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Tangerine">
     <style>
         h1 {
@@ -21,11 +21,11 @@
             <div class="form-body">
             <!--ADMIN LOGIN-->
             <h1>Restaurants Order System</h1>
-            <form action="" class="the-form">
+            <div>
                 <label>Username: <input type="text" id="id" required placeholder="Enter your Username"/> </label> <br/>
                 <label>Password: <input type="password" id="password" required placeholder="Enter your password"/></label> <br/>
                 <button onclick="logInStatus()" value="Log In">Log In</button>
-            </form>
+            </div>
             <div class="form-footer">
                 <div>
                     <span>By T2Grass</span>
@@ -48,7 +48,7 @@
             }).then((response) => response.json())
             .then((data) => {
                 if (data.status === 'success') {
-                    location.location("http://localhost:5000/" + data.role)
+                    location.href = "http://localhost:5000/" + data.role
                 }
                 else if (data.status === 'incorrect password') {
                     window.alert("Password is incorrect. Please try again")
