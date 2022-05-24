@@ -70,9 +70,9 @@ export default class OrdersDAO {
         }
     }
 
-    static async getAllOrders() {
+    static async getAllOrders(query) {
         try {
-            return await this.orders.find().toArray()
+            return await this.orders.find(query).toArray()
         } catch (err) {
             console.log(`Unable to get all orders: ${err.message}`)
             return { error: err }

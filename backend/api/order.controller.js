@@ -115,7 +115,7 @@ export default class OrderController{
 
             const promotion = await PromotionsDAO.getPromotion(req.body.code) || false
             let discountedAmount = orders[0].totalAmount
-            let menus = []
+            let menus = orders[0].menus
             let date = orders[0].date
 
             // if there are more than one order
