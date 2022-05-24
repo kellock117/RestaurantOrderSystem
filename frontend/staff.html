@@ -66,22 +66,17 @@
             <!-- search order -->
             <div id="pg1" style="display: none">
                 <div class="filter">
-                    <select id="filter">
-                        <option value="role">Role</option>
-                        <option value="orderName">Order Name</option>
-                    </select>
-                    <input type="text" id="search value" placeholder="Enter value"/>
+                    <label>tableNumber: <input type="text" id="tableNumber" placeholder="Enter tableNumber"/></label>
                     <button onclick="SearchOrder()">Search</button>
                 </div>
                 <table id="search orderList">
                     <tr>
-                        <th>ID</th><th>PASSWORD</th><th>USER NAME</th><th>ROLE</th>
+                        <th>Table Number</th><th>Menus</th><th>Total Amount</th><th>Confirm Order</th><th>Reject Order</th>
                     </tr>
                 </table>
             </div>
 
-    <script>
-        let info = null        
+    <script>   
         let viewLength = 0
         let searchLength = 0
 
@@ -99,15 +94,16 @@
             }
         }
 
-        function RefreshViewTable() {
-            const table = document.getElementById("view orderList")
-            for (let i = 0; i < viewLength; i++) {
+        function RefreshTable(tableName) {
+            const table = document.getElementById(`${tableName} orderList`)
+            const length = tableName === "view" ? viewLength : searchLength
+            for (let i = 0; i < length; i++) {
                 table.deleteRow(-1)
             }
         }
 
         document.getElementById("vieworder").addEventListener("click", function(){
-            RefreshViewTable()
+            RefreshTable("view")
             ChangeEffect("vieworder")
 
             fetch("http://localhost:5000/staff/viewOrder", {
@@ -115,16 +111,12 @@
             })
             .then((response) => response.json())
             .then((data) => {
-                info = data
-                ViewOrder()
+                viewLength = data.length
+                ViewOrder(data)
             })
         } )
 
         document.getElementById("searchorder").addEventListener("click", function() {
-            const table = document.getElementById("search orderList")
-            for (let i = 0; i < searchLength; i++) {
-                table.deleteRow(-1)
-            }
             ChangeEffect("searchorder")
         } )
 
@@ -135,12 +127,9 @@
             location.replace("http://localhost:5000/")
         } )
 
-        function ViewOrder() {
-            const table = document.getElementById("view orderList")
-
-            for (const element of info) {
+        function CreateTable(table, data) {
+            for (const element of data) {
                 const row = table.insertRow()
-                row.id = element._id
 
                 const tableNumberCell = row.insertCell()
                 tableNumberCell.innerText = element.tableNumber
@@ -156,17 +145,26 @@
                 totalAmountCell.innerText = element.totalAmount
 
                 const confirmCell = row.insertCell()
-                confirmCell.innerHTML = `<button onClick="ConfirmOrder(${element._id})">Confirm</button>`
-                
                 const deleteCell = row.insertCell()
-                deleteCell.innerHTML = `<button onClick="DeleteOrder(${element._id})">Delete</button>`
-            }
 
-            viewLength = info.length
+                if (element.confirmed) {
+                    confirmCell.innerText = "confirmed"
+                    deleteCell.innerText = "confirmed"
+                }
+                else {
+                    confirmCell.innerHTML = `<button onClick="ConfirmOrder('${element._id}')">Confirm</button>`
+                    deleteCell.innerHTML = `<button onClick="DeleteOrder('${element._id}')">Delete</button>`
+                }
+            }
+        }
+
+        function ViewOrder(data) {
+            const table = document.getElementById("view orderList")
+            CreateTable(table, data)
         }
 
         function ConfirmOrder(id) {
-            fetch("http://localhost:5000/staff/confrimOrder", {
+            fetch("http://localhost:5000/staff/confirmOrder", {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json"
@@ -179,7 +177,7 @@
             .then((data) => {
                 if (data.status === 'success') {
                     window.alert("Confirmed")
-                    RefreshViewTable()
+                    location.reload()
                 }
                 else {
                     window.alert("fail to confrim")
@@ -201,7 +199,7 @@
             .then((data) => {
                 if (data.status === 'success') {
                     window.alert("Deleted")
-                    RefreshViewTable()
+                    location.reload()
                 }
                 else {
                     window.alert("fail to delete")
@@ -210,37 +208,27 @@
         }
 
         function SearchOrder() {
-            const infoList = ["id", "password", "orderName", "role"]
+            RefreshTable("search")
             const table = document.getElementById("search orderList")
-            const filter = document.getElementById("filter").value
-            const value = document.getElementById("search value").value
+            const tableNumber = document.getElementById("tableNumber").value
 
-            if (value == "" ) {
+            if (tableNumber == "" ) {
                 window.alert("Please fill in the blank")
                 return
             }
 
-            fetch("http://localhost:5000/admin/search", {
+            fetch("http://localhost:5000/staff/searchOrder", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify({
-                    filter: filter,
-                    value: value
+                    tableNumber: tableNumber
                 })
             })
             .then((response) => response.json())
             .then((data) => {
-                for (const element of data) {
-                    const row = table.insertRow()
-
-                    for (const e of infoList) {
-                        const cell = row.insertCell()
-                        cell.innerText = element[e]
-                    }
-                }
-
+                CreateTable(table, data)
                 searchLength = data.length
             })
         }
