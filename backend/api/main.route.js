@@ -93,7 +93,7 @@ router.get('/manager/userinfo', UserCtrl.apiGetUserInfo)
 //----------------------------------staff----------------------------------
 
 router.get("/staff", function(_req, res) {
-  res.send("<h1>staff</h1>")
+  res.sendFile(Path.join(__dirname, '../frontend/staff.html'))
 })
 
 // ()
@@ -105,8 +105,8 @@ router.post("/staff/searchOrder", OrderCtrl.apiSearchOrder)
 // (_id)
 router.put("/staff/confirmOrder", OrderCtrl.apiUpdateOrder)
 
-// (tableNumber)
-router.delete("/staff/cancelOrder", OrderCtrl.apiDeleteOrder)
+// (_id)
+router.delete("/staff/deleteOrder", OrderCtrl.apiDeleteOrder)
 
 // ()
 router.get('/staff/logout', LoginCtrl.apiLogout)

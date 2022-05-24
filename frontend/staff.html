@@ -49,29 +49,29 @@
 <body>
     <h1>Staff Main</h1>
         <div class="topnav">
-            <a id = "vieworder">View Users</a>
-            <a id = "searchorder">Search Users</a>
+            <a id = "vieworder">View Orders</a>
+            <a id = "searchorder">Search Orders</a>
             <a id = "logout">Logout</a>
           </div>
           <div>
             <!-- view order -->
-            <div id = "pg1" style="display: none">
+            <div id = "pg0" style="display: none">
                 <table id="view orderList">
                     <tr>
-                        <th>ID</th><th>PASSWORD</th><th>USER NAME</th><th>ROLE</th>
+                        <th>Table Number</th><th>Menus</th><th>Total Amount</th><th>Confirm Order</th><th>Reject Order</th>
                     </tr>
                 </table>
             </div>
 
             <!-- search order -->
-            <div id="pg2" style="display: none">
+            <div id="pg1" style="display: none">
                 <div class="filter">
                     <select id="filter">
                         <option value="role">Role</option>
-                        <option value="orderName">User Name</option>
+                        <option value="orderName">Order Name</option>
                     </select>
                     <input type="text" id="search value" placeholder="Enter value"/>
-                    <button onclick="SearchUser()">Search</button>
+                    <button onclick="SearchOrder()">Search</button>
                 </div>
                 <table id="search orderList">
                     <tr>
@@ -80,15 +80,13 @@
                 </table>
             </div>
 
-
-
     <script>
         let info = null        
         let viewLength = 0
         let searchLength = 0
 
         function ChangeEffect(func) {
-            const navInfo = ["createorder", "vieworder", "searchorder", "updateorder", "deleteorder"]
+            const navInfo = ["vieworder", "searchorder"]
             document.getElementById(func).className = "active"
             
             for (const e in navInfo) {
@@ -101,20 +99,24 @@
             }
         }
 
-        document.getElementById("vieworder").addEventListener("click", function(){
+        function RefreshViewTable() {
             const table = document.getElementById("view orderList")
             for (let i = 0; i < viewLength; i++) {
                 table.deleteRow(-1)
             }
+        }
+
+        document.getElementById("vieworder").addEventListener("click", function(){
+            RefreshViewTable()
             ChangeEffect("vieworder")
 
-            fetch("http://localhost:5000/admin/view", {
+            fetch("http://localhost:5000/staff/viewOrder", {
             method: "GET",
             })
             .then((response) => response.json())
             .then((data) => {
                 info = data
-                ViewUser()
+                ViewOrder()
             })
         } )
 
@@ -133,22 +135,81 @@
             location.replace("http://localhost:5000/")
         } )
 
-        function ViewUser() {
-            const infoList = ["id", "password", "orderName", "role"]
+        function ViewOrder() {
             const table = document.getElementById("view orderList")
 
             for (const element of info) {
                 const row = table.insertRow()
-                for (const e of infoList) {
-                    const cell = row.insertCell()
-                    cell.innerText = element[e]
+                row.id = element._id
+
+                const tableNumberCell = row.insertCell()
+                tableNumberCell.innerText = element.tableNumber
+
+                const menusCell = row.insertCell()
+                let value = ""
+                for (const menu of element.menus) {
+                    value += JSON.stringify(menu)
                 }
+                menusCell.innerText = value
+
+                const totalAmountCell = row.insertCell()
+                totalAmountCell.innerText = element.totalAmount
+
+                const confirmCell = row.insertCell()
+                confirmCell.innerHTML = `<button onClick="ConfirmOrder(${element._id})">Confirm</button>`
+                
+                const deleteCell = row.insertCell()
+                deleteCell.innerHTML = `<button onClick="DeleteOrder(${element._id})">Delete</button>`
             }
 
             viewLength = info.length
         }
 
-        function SearchUser() {
+        function ConfirmOrder(id) {
+            fetch("http://localhost:5000/staff/confrimOrder", {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    _id: id
+                })
+            })
+            .then((response) => response.json())
+            .then((data) => {
+                if (data.status === 'success') {
+                    window.alert("Confirmed")
+                    RefreshViewTable()
+                }
+                else {
+                    window.alert("fail to confrim")
+                }
+            })
+        }
+
+        function DeleteOrder(id) {
+            fetch("http://localhost:5000/staff/deleteOrder", {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    _id: id
+                })
+            })
+            .then((response) => response.json())
+            .then((data) => {
+                if (data.status === 'success') {
+                    window.alert("Deleted")
+                    RefreshViewTable()
+                }
+                else {
+                    window.alert("fail to delete")
+                }
+            })
+        }
+
+        function SearchOrder() {
             const infoList = ["id", "password", "orderName", "role"]
             const table = document.getElementById("search orderList")
             const filter = document.getElementById("filter").value
@@ -182,57 +243,6 @@
 
                 searchLength = data.length
             })
-        }
-
-        function UpdateAccount() {
-            const id = document.getElementById("uaid").value
-            const password = document.getElementById("uapassword").value
-
-            if (id == '' || password == '') {
-                window.alert("Please fill in the blank")
-                return
-            }
-
-            fetch("http://localhost:5000/admin/update", {
-                method: "PUT",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    id: id,
-                    password: password
-                })
-            })
-            .then((response) => response.json())
-            .then((data) => {
-                if (data.status === 'success'){
-                    window.alert("Account updated successfully")
-                }
-                else if (data.status === 'id does not exist'){
-                    window.alert("Id does not exist")
-                }
-            })
-        }
-
-        function DeleteUser() {
-            const id = document.getElementById("did").value
-
-            fetch("http://localhost:5000/admin/delete", {
-                method: "DELETE",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    id: id
-                })
-            }).then((response) => response.json())
-            .then((data) => {
-                if (data.status === 'success'){
-                    window.alert("Account deleted successfully")
-                } else if (data.status === 'id does not exist'){
-                    window.alert("id does not exist")
-                }
-            }) 
         }
     </script>
 </body>

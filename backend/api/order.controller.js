@@ -93,9 +93,9 @@ export default class OrderController{
 
     static async apiDeleteOrder(req, res) {
         try {
-            const tableNumber = req.body.tableNumber
+            const id = req.body._id
 
-            await OrdersDAO.deleteOrder(tableNumber)
+            await OrdersDAO.deleteOrder(id)
 
             res.json({ status: "success" })
         } catch (err) {
