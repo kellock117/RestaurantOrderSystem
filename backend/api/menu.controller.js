@@ -54,8 +54,8 @@ export default class MenuController{
             const menu = await MenusDAO.getMenu(name)
 
             // if price and image are not passed, then get information from original menu
-            const price = req.body.price ? req.body.price : menu.price
-            const image = req.body.image ? req.files.map(e => e.filename) : menu.image
+            const price = req.body.price || menu.price
+            const image = req.files != undefined ? req.files.map(e => e.filename) : menu.image
             
             await MenusDAO.updateMenu(
                 name,
@@ -66,7 +66,7 @@ export default class MenuController{
             
             res.json({ status: 'success'})
         } catch (err) {
-            res.status(400).json({ error: err })
+            res.status(400).json({ error: err.message })
         }
     } 
 

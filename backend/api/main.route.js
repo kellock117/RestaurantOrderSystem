@@ -4,6 +4,7 @@ import LoginCtrl from "./login.controller.js"
 import MenuCtrl from "./menu.controller.js"
 import PromotionCtrl from "./promotion.controller.js"
 import OrderCtrl from "./order.controller.js"
+import StatisticsCtrl from "./statistics.controller.js"
 import Multer from "./multer.js"
 import Path from "path"
 
@@ -117,8 +118,17 @@ router.get('/staff/userinfo', UserCtrl.apiGetUserInfo)
 //----------------------------------owner----------------------------------
 
 router.get("/owner", function(_req, res) {
-  res.send("<h1>owner</h1>")
+  res.sendFile(Path.join(__dirname, '../frontend/owner.html'))
 })
+
+// (filter: "month", year: integer, month: integer) => monthly visiting
+// (filter: "week", year: integer, month: integer, from: integer, to: integer) => weekly visiting
+// (filter: "day", year: integer, month: integer, day: integer) => daily visiting
+router.post("/owner/visiting", StatisticsCtrl.apiGetVisiting)
+
+router.post("/owner/totalAmount", StatisticsCtrl.apiGetTotalAmount)
+
+router.post("/owner/preference", StatisticsCtrl.apiGetPreference)
 
 router.get("/owner/viewOrder", OrderCtrl.apiViewAllOrder)
 
