@@ -91,10 +91,10 @@ export default class OrdersDAO {
         }
     }
 
-    static async deleteOrder(tableNumber) {
+    static async deleteOrder(id) {
         try {
             const query = { 
-                tableNumber: tableNumber,
+                _id: ObjectId(id),
                 confirmed: false
             }
             
