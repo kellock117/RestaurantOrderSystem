@@ -124,7 +124,6 @@
     <script>
         let info = null        
         let viewLength = 0
-        let searchLength = 0
 
         function ChangeEffect(func) {
             const navInfo = ["createuser", "viewuser", "searchuser", "updateuser", "deleteuser"]
@@ -162,10 +161,6 @@
         } )
 
         document.getElementById("searchuser").addEventListener("click", function() {
-            const table = document.getElementById("search userList")
-            for (let i = 0; i < searchLength; i++) {
-                table.deleteRow(-1)
-            }
             ChangeEffect("searchuser")
         } )
 
@@ -234,9 +229,15 @@
             viewLength = info.length
         }
 
+        let searchLength = 0
+        
         function SearchUser() {
-            const infoList = ["id", "password", "userName", "role"]
             const table = document.getElementById("search userList")
+            for (let i = 0; i < searchLength; i++) {
+                table.deleteRow(-1)
+            }
+
+            const infoList = ["id", "password", "userName", "role"]
             const filter = document.getElementById("filter").value
             const value = document.getElementById("search value").value
 

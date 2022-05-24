@@ -3,7 +3,6 @@ import UsersDAO from "../dao/usersDAO.js"
 export default class LoginController {
     static async apiLogin(req, res) {
         try {
-            console.log(req.body)
             const id = req.body.id
             const password = req.body.password
             

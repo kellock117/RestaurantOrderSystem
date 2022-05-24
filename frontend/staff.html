@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+</head>
+<style>
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+    
+    table {
+    width: 100%;
+    border: 1px solid #444444;
+    border-collapse: collapse;
+    }
+    
+    th, td {
+        border: 1px solid #444444;
+    }
+
+    .topnav {
+      overflow: hidden;
+      background-color: #333;
+    }
+    
+    .topnav a {
+      float: left;
+      color: #f2f2f2;
+      text-align: center;
+      padding: 14px 16px;
+      text-decoration: none;
+      font-size: 17px;
+    }
+    
+    .topnav a:hover {
+      background-color: #ddd;
+      color: black;
+    }
+    
+    .topnav a.active {
+      background-color: #04AA6D;
+      color: white;
+    }
+    </style>
+<body>
+    <h1>Staff Main</h1>
+        <div class="topnav">
+            <a id = "vieworder">View Users</a>
+            <a id = "searchorder">Search Users</a>
+            <a id = "logout">Logout</a>
+          </div>
+          <div>
+            <!-- view order -->
+            <div id = "pg1" style="display: none">
+                <table id="view orderList">
+                    <tr>
+                        <th>ID</th><th>PASSWORD</th><th>USER NAME</th><th>ROLE</th>
+                    </tr>
+                </table>
+            </div>
+
+            <!-- search order -->
+            <div id="pg2" style="display: none">
+                <div class="filter">
+                    <select id="filter">
+                        <option value="role">Role</option>
+                        <option value="orderName">User Name</option>
+                    </select>
+                    <input type="text" id="search value" placeholder="Enter value"/>
+                    <button onclick="SearchUser()">Search</button>
+                </div>
+                <table id="search orderList">
+                    <tr>
+                        <th>ID</th><th>PASSWORD</th><th>USER NAME</th><th>ROLE</th>
+                    </tr>
+                </table>
+            </div>
+
+
+
+    <script>
+        let info = null        
+        let viewLength = 0
+        let searchLength = 0
+
+        function ChangeEffect(func) {
+            const navInfo = ["createorder", "vieworder", "searchorder", "updateorder", "deleteorder"]
+            document.getElementById(func).className = "active"
+            
+            for (const e in navInfo) {
+                if (navInfo[e] == func) {
+                    document.getElementById(`pg${e}`).style.display = "block"
+                    continue
+                }
+                document.getElementById(navInfo[e]).className = " "
+                document.getElementById(`pg${e}`).style.display = "none"
+            }
+        }
+
+        document.getElementById("vieworder").addEventListener("click", function(){
+            const table = document.getElementById("view orderList")
+            for (let i = 0; i < viewLength; i++) {
+                table.deleteRow(-1)
+            }
+            ChangeEffect("vieworder")
+
+            fetch("http://localhost:5000/admin/view", {
+            method: "GET",
+            })
+            .then((response) => response.json())
+            .then((data) => {
+                info = data
+                ViewUser()
+            })
+        } )
+
+        document.getElementById("searchorder").addEventListener("click", function() {
+            const table = document.getElementById("search orderList")
+            for (let i = 0; i < searchLength; i++) {
+                table.deleteRow(-1)
+            }
+            ChangeEffect("searchorder")
+        } )
+
+        document.getElementById("logout").addEventListener("click", function() {
+            fetch("htt[://localhost:5000/staff/logout", {
+                method: "get"
+            })
+            location.replace("http://localhost:5000/")
+        } )
+
+        function ViewUser() {
+            const infoList = ["id", "password", "orderName", "role"]
+            const table = document.getElementById("view orderList")
+
+            for (const element of info) {
+                const row = table.insertRow()
+                for (const e of infoList) {
+                    const cell = row.insertCell()
+                    cell.innerText = element[e]
+                }
+            }
+
+            viewLength = info.length
+        }
+
+        function SearchUser() {
+            const infoList = ["id", "password", "orderName", "role"]
+            const table = document.getElementById("search orderList")
+            const filter = document.getElementById("filter").value
+            const value = document.getElementById("search value").value
+
+            if (value == "" ) {
+                window.alert("Please fill in the blank")
+                return
+            }
+
+            fetch("http://localhost:5000/admin/search", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    filter: filter,
+                    value: value
+                })
+            })
+            .then((response) => response.json())
+            .then((data) => {
+                for (const element of data) {
+                    const row = table.insertRow()
+
+                    for (const e of infoList) {
+                        const cell = row.insertCell()
+                        cell.innerText = element[e]
+                    }
+                }
+
+                searchLength = data.length
+            })
+        }
+
+        function UpdateAccount() {
+            const id = document.getElementById("uaid").value
+            const password = document.getElementById("uapassword").value
+
+            if (id == '' || password == '') {
+                window.alert("Please fill in the blank")
+                return
+            }
+
+            fetch("http://localhost:5000/admin/update", {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    id: id,
+                    password: password
+                })
+            })
+            .then((response) => response.json())
+            .then((data) => {
+                if (data.status === 'success'){
+                    window.alert("Account updated successfully")
+                }
+                else if (data.status === 'id does not exist'){
+                    window.alert("Id does not exist")
+                }
+            })
+        }
+
+        function DeleteUser() {
+            const id = document.getElementById("did").value
+
+            fetch("http://localhost:5000/admin/delete", {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    id: id
+                })
+            }).then((response) => response.json())
+            .then((data) => {
+                if (data.status === 'success'){
+                    window.alert("Account deleted successfully")
+                } else if (data.status === 'id does not exist'){
+                    window.alert("id does not exist")
+                }
+            }) 
+        }
+    </script>
+</body>
+</html>
