@@ -100,6 +100,9 @@ router.get("/staff", function(_req, res) {
 // ()
 router.get("/staff/viewOrder", OrderCtrl.apiViewUnconfirmedOrder)
 
+// ()
+router.get("/staff/viewAllOrder", OrderCtrl.apiViewAllOrder)
+
 // (tableNumber)
 router.post("/staff/searchOrder", OrderCtrl.apiSearchOrder)
 
@@ -129,8 +132,6 @@ router.post("/owner/visiting", StatisticsCtrl.apiGetVisiting)
 router.post("/owner/totalAmount", StatisticsCtrl.apiGetTotalAmount)
 
 router.post("/owner/preference", StatisticsCtrl.apiGetPreference)
-
-router.get("/owner/viewOrder", OrderCtrl.apiViewAllOrder)
 
 router.get('/owner/logout', LoginCtrl.apiLogout)
 

@@ -16,12 +16,12 @@ export default class OrdersDAO {
         }
     }
 
-    static async createOrder(tableNumber, menus, totalAmount, date, confirmed, paid) {
+    static async createOrder(tableNumber, menus, totalPrice, date, confirmed, paid) {
         try {
             const orderDoc = {
                 tableNumber: tableNumber,
                 menus: menus,
-                totalAmount: totalAmount,
+                totalPrice: totalPrice,
                 date: date,
                 confirmed: confirmed,
                 paid: paid

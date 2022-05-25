@@ -33,16 +33,22 @@ export default class PromotionController{
 
     static async apiUpdatePromotion(req, res) {
         try {
+            console.log(req.body)
             const code = req.body.code
             const promotion = await PromotionsDAO.getPromotion(code)
-
             // if discountRate and expiryDate are not passed, then get information from original promotion
-            const discountRate = req.body.discountRate ? req.body.discountRate : promotion.discountRate
-            const expiryDate = req.body.expiryDate ? req.body.expiryDate : promotion.expiryDate
-            const splitDate = expiryDate.split('-')
-            const date = new Date(splitDate)
+            const discountRate = req.body.discountRate || promotion.discountRate
+            const expiryDate = req.body.expiryDate || promotion.expiryDate
+            let date
 
-            
+            if (expiryDate == promotion.expiryDate) {
+                date = new Date(promotion.expiryDate)
+            }
+            else {
+                const splitDate = expiryDate.split('-')
+                date = new Date(splitDate)
+            }
+
             await PromotionsDAO.updatePromotion(
                 code,
                 discountRate,

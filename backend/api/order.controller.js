@@ -9,7 +9,7 @@ export default class OrderController{
             let menus = req.body.menus 
             const date = new Date()
             let menusArray = []
-            let totalAmount = 0
+            let totalPrice = 0
 
 
             for (const menu of menus) {
@@ -26,7 +26,7 @@ export default class OrderController{
                     amount: amount
                 }
 
-                totalAmount += amount
+                totalPrice += amount
                 menusArray.push(menuObj)
             }
 
@@ -34,7 +34,7 @@ export default class OrderController{
             await OrdersDAO.createOrder(
                 tableNumber,
                 menusArray,
-                totalAmount,
+                totalPrice,
                 date,
                 false,
                 false
@@ -114,14 +114,14 @@ export default class OrderController{
             }
 
             const promotion = await PromotionsDAO.getPromotion(req.body.code) || false
-            let discountedAmount = orders[0].totalAmount
+            let discountedAmount = orders[0].totalPrice
             let menus = orders[0].menus
             let date = orders[0].date
 
             // if there are more than one order
             if (orders.length >= 2) {
                 menus = orders.map(e => e.menus).flat()
-                discountedAmount = orders.reduce( (p, c) => p += c.totalAmount, 0)
+                discountedAmount = orders.reduce( (p, c) => p += c.totalPrice, 0)
 
                 menus = menus.reduce( (curr, ele) => {
                     let exist = curr.filter( cur => cur.name == ele.name)
@@ -164,7 +164,7 @@ export default class OrderController{
             res.json({ 
                 status: 'success',
                 discountRate: promotion.discountRate,
-                amount: discountedAmount
+                totalPrice: discountedAmount
             })
         } catch (err) {
             res.status(400).json({ error: err.message })

@@ -6,37 +6,699 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MANAGER</title>
 </head>
+<style>
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+    
+    table {
+    width: 100%;
+    border: 1px solid #444444;
+    border-collapse: collapse;
+    }
+    
+    th, td {
+        border: 1px solid #444444;
+    }
+
+    .topnav {
+      overflow: hidden;
+      background-color: #333;
+    }
+    
+    .topnav a {
+      float: left;
+      color: #f2f2f2;
+      text-align: center;
+      padding: 14px 16px;
+      text-decoration: none;
+      font-size: 17px;
+    }
+    
+    .topnav a:hover {
+      background-color: #ddd;
+      color: black;
+    }
+    
+    .topnav a.active {
+      background-color: #04AA6D;
+      color: white;
+    }
+    </style>
 <body>
-    <div class="main-container"></div>
-        <div class="form-container">
-            <div class="form-body">
-            <h1>create menu</h1>
-            <form class="the-form" enctype="multipart/form-data">
+    <h1>Manager Main</h1>
+    <div class="topnav">
+        <a id = "createmenu" class="active">Create Menu</a>
+        <a id = "viewmenu">View Menu</a>
+        <a id = "searchmenu">Search Menu</a>
+        <a id = "updatemenu">Update Menu</a>
+        <a id = "deletemenu">Delete Menu</a>
+        <a id = "createpromo">Create Promo</a>
+        <a id = "viewpromo">View Promo</a>
+        <a id = "updatepromo">UpdatePromo</a>
+        <a id = "deletepromo">Delete Promo</a>
+        <a id = "logout">Logout</a>
+    </div>
+        <div>
+             <!-- create Menu Item -->
+            <div id = "pg0">
+                <h1>create menu</h1>
                 <label>name: <input type="text" id="name" required placeholder="Enter menu"/> </label> <br/>
                 <label>price: <input type="text" id="price" required placeholder="Enter price"/></label> <br/>
                 <input type="file" name="files" id="files" multiple>
                 <button onclick="createMenu()" type="submit" "Create">Create</button>
-            </form>
-        </div> 
-    </div>
+            </div>
+
+
+             <!-- view Menu Item-->
+            <div id = "pg1" style="display: none">
+            <table id="view MenuList">
+                <tr>
+                    <th>NAME</th><th>PRICE</th><th>IMAGE</th>
+                </tr>
+            </table>
+            </div>
+
+            <!-- Search Menu Item -->
+            <div id = "pg2" style="display: none">
+                <div class="filter">
+                    <input type="text" id="search value" placeholder="Enter Menu Item Name to Search for" style = "width: 200px;"/>
+                    <button onclick="SearchMenu()">Search</button>
+                </div>
+                <table id="search MenuList">
+                    <tr>
+                        <th>NAME</th><th>PRICE</th><th>IMAGE</th>
+                    </tr>
+                </table>
+            </div>
+
+            <!-- Update Menu Item -->
+            <div id = "pg3" style="display: none">
+                <div class="update menu">
+                    <label>Name: <input type="text" id="umName" style = "width: 200px"placeholder="Enter Exisitng Menu Item Name"/> </label> <br/>
+                    <label>New Name: <input type="text" id="umNewName" placeholder="Enter New Menu Item Name"/></label> <br/>
+                    <label>New Price: <input type="text" id="umNewPrice" style = "width: 100px;"placeholder="Enter New Price"/></label> <br/>
+                    <input type="file" name="files" id="umNewImage" multiple>
+                    <button onclick="UpdateMenu()">Update</button>
+                </div>
+            </div>
+
+            <!-- Delete Menu Item -->
+            <div id = "pg4" style="display: none">
+                <label>Name:<input type="text" id="dMenu" placeholder="Enter Menu Item"/></label>
+                <button onclick="DeleteMenu()">Delete</button>
+            </div>
+
+            <!-- Create promotion -->
+            <div id = "pg5" style="display: none">
+                <label>Promo code: <input type="text" id="code" placeholder="Enter promo code"/> </label> <br/>
+                <label>Discount Rate: <input type="text" id="discount" placeholder="Enter discount rate"/></label> <br/>
+                <label class = "date">Select Expiry Date: </label>
+                <input id = "date" type ="date" ><br/>
+                <button onclick="CreatePromo()">Create</button>
+            </div>
+
+            <!-- View Promotion -->
+            <div id = "pg6" style="display: none">
+                <table id="view promoList">
+                    <tr>
+                        <th>PROMO CODE</th><th>DISCOUNT RATE</th><th>EXPIRY DATE</th>
+                    </tr>
+                </table>
+            </div>
+
+            <!-- Update Promotion -->
+            <div id = "pg7" style="display: none">
+                <label>Promo code: <input type="text" id="upCode" placeholder="Enter Existing promo code"/> </label> <br/>
+                <label>New Discount Rate: <input type="text" id="upDiscount" placeholder="Enter discount rate"/></label> <br/>
+                <label >New Expiry Date: </label>
+                <input id = "upDate" type ="date" ><br/>
+                <button onclick="UpdatePromo()">Update</button>
+            </div>
+
+            <!-- Delete Promotion -->
+            <div id = "pg8" style="display: none">
+                <label>Code:<input type="text" id="dPromo" placeholder="Enter Promo Code"/></label>
+                <button onclick="DeletePromo()">Delete</button>
+            </div>
+        </div>
+
     <script>
+        let info = null
+        let info2 = null    
+        let viewLength = 0
+        let viewLength2 = 0
+        let searchLength = 0
+
+        function ChangeEffect(func) {
+            const navInfo = ["createmenu", "viewmenu", "searchmenu", "updatemenu", "deletemenu", "createpromo", "viewpromo", "updatepromo", "deletepromo"]
+            document.getElementById(func).className = "active"
+            
+            for (const e in navInfo) {
+                if (navInfo[e] == func) {
+                    document.getElementById(`pg${e}`).style.display = "block"
+                    continue
+                }
+                document.getElementById(navInfo[e]).className = " "
+                document.getElementById(`pg${e}`).style.display = "none"
+            }
+        }
+
+        document.getElementById("createmenu").addEventListener("click", function() {
+            ChangeEffect("createmenu")
+        } )
+
+        document.getElementById("viewmenu").addEventListener("click", function() {
+            const table = document.getElementById("view MenuList")
+            for (let i = 0; i < viewLength; i++) {
+                table.deleteRow(-1)
+            }
+            ChangeEffect("viewmenu")
+
+            fetch("http://localhost:5000/manager/viewMenu", {
+            method: "GET",
+            })
+            .then((response) => response.json())
+            .then((data) => {
+                info = data
+                ViewMenu()
+            })
+        } )
+
+        document.getElementById("searchmenu").addEventListener("click", function() {
+            ChangeEffect("searchmenu")
+        } )
+
+        document.getElementById("updatemenu").addEventListener("click", function() {
+            ChangeEffect("updatemenu")
+        } )
+
+        document.getElementById("deletemenu").addEventListener("click", function() {
+            ChangeEffect("deletemenu")
+        } )
+
+        document.getElementById("createpromo").addEventListener("click", function() {
+            ChangeEffect("createpromo")
+        } )
+
+        document.getElementById("viewpromo").addEventListener("click", function() {
+            const table = document.getElementById("view promoList")
+            for (let i = 0; i < viewLength2; i++) {
+                table.deleteRow(-1)
+            }
+            ChangeEffect("viewpromo")
+
+            fetch("http://localhost:5000/manager/viewPromotion", {
+            method: "GET",
+            })
+            .then((response) => response.json())
+            .then((data) => {
+                info2 = data
+                ViewPromo()
+            })
+            
+        } )
+
+        document.getElementById("updatepromo").addEventListener("click", function() {
+            ChangeEffect("updatepromo")
+        } )
+
+        document.getElementById("deletepromo").addEventListener("click", function() {
+            ChangeEffect("deletepromo")
+        } )
+
+        document.getElementById("logout").addEventListener("click", function() {
+            fetch("htt[://localhost:5000/manager/logout", {
+                method: "get"
+            })
+            location.replace("http://localhost:5000/")
+        } )
+
+
         function createMenu() {
             var files = document.getElementById("files")
-            var data = new FormData()
-            data.append('name', document.getElementById("name").value)
-            data.append('price', document.getElementById("price").value)
+            var name = document.getElementById("name").value
+            var price = document.getElementById("price").value
+            var data1 = new FormData()
+
+            data1.append('name', document.getElementById("name").value)
+            data1.append('price', document.getElementById("price").value)
 
             for(let i = 0; i < files.files.length; i++) {
-                data.append("files", files.files[i])
+                data1.append("files", files.files[i])
+            }
+            console.log(data1)
+            console.log(files.value)
+            console.log(document.getElementById("name").value)
+            console.log(document.getElementById("price").value)
+            if (name == '' || price == '' || files.value == '' ) {
+                window.alert("Please fill in the blank")
+                return
             }
 
             fetch("http://localhost:5000/manager/createMenu", {
                 method: "POST",
-                body: data
+                body: data1
             }).then((response) => response.json())
             .then((data) => {
-                console.log(data)
+                if (data.status === 'success'){
+                    window.alert("Menu Item added successfully")
+                    return
+                }
+                else if (data.status === 'Menu already exists'){
+                    window.alert("Menu Item already exists")
+                    return
+                }
+                
+                else if (data.status === 'You must select a file.'){
+                    window.alert("You must select a file")
+                    return
+                }
             })
+        
+        }
+
+        function ViewMenu() {
+                const infoList = ["name", "price", "image"]
+                const table = document.getElementById("view MenuList")
+
+                for (const element of info) {
+                    const row = table.insertRow()
+                    for (const e of infoList) {
+                        const cell = row.insertCell()
+                        cell.innerText = element[e]
+                    }
+                }
+
+                viewLength = info.length
+        }
+    
+        function SearchMenu() {
+            const table = document.getElementById("search MenuList")
+            for (let i = 0; i < searchLength; i++) {
+                table.deleteRow(-1)
+            }
+
+            const infoList = ["name", "price", "image"]
+            const name = document.getElementById("search value").value
+
+            if (name == "" ) {
+                window.alert("Please fill in the blank")
+                return
+            }
+
+            fetch("http://localhost:5000/manager/searchMenu", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    name: name
+                })
+            })
+            .then((response) => response.json())
+            .then((data) => {
+                for (const element of data) {
+                    const row = table.insertRow()
+
+                    for (const e of infoList) {
+                        const cell = row.insertCell()
+                        cell.innerText = element[e]
+                    }
+                }
+
+                searchLength = data.length
+            })
+        }
+
+        function UpdateMenu() {
+            var name = document.getElementById("umName").value
+            var price = document.getElementById("umNewPrice").value
+            var rename = document.getElementById("umNewName").value
+            var files = document.getElementById("umNewImage")
+
+            var data = new FormData()
+
+                if (name == ''){
+                    window.alert("Please fill in the blanks")
+                    return
+                }
+
+                    if (rename == '' && price == '' && files.value == ''){
+                        window.alert("Please fill in the blanks")
+                        return
+                    }
+
+                    if (rename != '' && price != '' && files.value != ''){
+                        data.append('name',name)
+                        data.append('rename', rename)
+                        data.append('price', price)
+                        for(let i = 0; i < files.files.length; i++) {
+                            data.append("files", files.files[i])
+                        }
+                        for (var value of data.values()){
+                            console.log(value);
+                        }
+                        fetch("http://localhost:5000/manager/updateMenu", {
+                        method: "POST",
+                        body: data
+                    })
+                    .then((response) => response.json())
+                    .then((data) => {
+                        if (data.status === 'success'){
+                            window.alert("Menu Name, Image and Price Changed successfully")
+                        }
+                        else if (data.status === 'Menu name already exists'){
+                            window.alert("Menu Name already exists")
+                        }
+                        else {
+                            console.log(data)
+                            window.alert("Menu Item Does not exist")
+                        }
+                    })
+                    }
+
+                    if (rename != '' && price == '' && files.value == ''){
+                        fetch("http://localhost:5000/manager/updateMenu", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            name: name,
+                            rename: rename
+                        })
+                    })
+                    .then((response) => response.json())
+                    .then((data) => {
+                        if (data.status === 'success'){
+                            window.alert("Menu Name Changed successfully")
+                        }
+                        else if (data.status === 'Menu name already exists'){
+                            window.alert("Menu Name already exists")
+                        }
+                        else {
+                            window.alert("Menu Item Does not exist")
+                        }
+                    })
+                    }
+                    
+                    if (rename == '' && price != '' && files.value == ''){
+                        fetch("http://localhost:5000/manager/updateMenu", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            name: name,
+                            price: price
+                        })
+                    })
+                    .then((response) => response.json())
+                    .then((data) => {
+                        if (data.status === 'success'){
+                            window.alert("Menu Price Changed successfully")
+                        }
+                        else {
+                            window.alert("Menu Item Does not exist")
+                        }
+                    })
+                    }
+
+                    if (rename == '' && price == '' && files.value != ''){
+                        data.append('name', name)
+                        for(let i = 0; i < files.files.length; i++) {
+                            data.append("files", files.files[i])
+                        }
+
+                        fetch("http://localhost:5000/manager/updateMenu", {
+                        method: "POST",
+                        body: data
+                    })
+                    .then((response) => response.json())
+                    .then((data) => {
+                        if (data.status === 'success'){
+                            window.alert("Menu Image Changed successfully")
+                        }
+                        else {
+                            console.log(data)
+                            window.alert("Menu Item Does not exist")
+                        }
+                    })
+                    }
+
+                    if (rename != '' && price != '' && files.value == ''){
+                        fetch("http://localhost:5000/manager/updateMenu", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            name: name,
+                            rename: rename,
+                            price: price
+                        })
+                    })
+                    .then((response) => response.json())
+                    .then((data) => {
+                        if (data.status === 'success'){
+                            window.alert("Menu Name and Price Changed successfully")
+                        }
+                        else if (data.status === 'Menu name already exists'){
+                            window.alert("Menu Name already exists")
+                        }
+                        else {
+                            window.alert("Menu Item Does not exist")
+                        }
+                    })
+                    }
+                    
+                    if (rename != '' && price == '' && files.value != ''){
+                        data.append('name', name)
+                        data.append('rename', rename)
+                        for(let i = 0; i < files.files.length; i++) {
+                            data.append("files", files.files[i])
+                        }
+
+                        fetch("http://localhost:5000/manager/updateMenu", {
+                        method: "POST",
+                        body: data
+                    })
+                    .then((response) => response.json())
+                    .then((data) => {
+                        if (data.status === 'success'){
+                            window.alert("Menu Name and Image Changed successfully")
+                        }
+                        else if (data.status === 'Menu name already exists'){
+                            window.alert("Menu Name already exists")
+                        }
+                        else {
+                            window.alert("Menu Item Does not exist")
+                        }
+                    })
+                    }
+
+                    if (rename == '' && price != '' && files.value != ''){
+                        data.append('name', name)
+                        data.append('price', price)
+
+                        for(let i = 0; i < files.files.length; i++) {
+                            data.append("files", files.files[i])
+                        }
+
+                        fetch("http://localhost:5000/manager/updateMenu", {
+                        method: "POST",
+                        body: data
+                    })
+                    .then((response) => response.json())
+                    .then((data) => {
+                        if (data.status === 'success'){
+                            window.alert("Menu Price and Image Changed successfully")
+                        }
+                        else if (data.status === 'Menu name already exists'){
+                            window.alert("Menu Name already exists")
+                        }
+                        else {
+                            window.alert("Menu Item Does not exist")
+                        }
+                    })
+                    }
+                
+        }
+
+        function DeleteMenu() {
+            const name = document.getElementById("dMenu").value
+
+            fetch("http://localhost:5000/manager/deleteMenu", {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    name: name
+                })
+            }).then((response) => response.json())
+            .then((data) => {
+                if (data.status === 'success'){
+                    window.alert("Menu Item deleted successfully")
+                } else {
+                    window.alert("Menu Item does not exist")
+                }
+            }) 
+        }
+
+        function CreatePromo() {
+            var code = document.getElementById("code").value
+            var discount = document.getElementById("discount").value
+            var date = document.getElementById("date").value
+
+            if (code == '' || discount == '' || date== '' ) {
+                window.alert("Please fill in the blank")
+                return
+            }
+            console.log(code)
+            console.log(discount)
+            console.log(date)
+            fetch("http://localhost:5000/manager/createPromotion", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    code: code,
+                    discountRate: discount,
+                    expiryDate: date
+                })
+            }).then((response) => response.json())
+            .then((data) => {
+                if (data.status === 'success'){
+                    window.alert("Promotion Created Successfully")
+                }
+                if (data.status === 'Code already exists'){
+                    window.alert("Promotion Code already exists please try again")
+                }
+            })
+        }
+
+        function ViewPromo() {
+            const infoList = ["code", "discountRate", "expiryDate"]
+            const table = document.getElementById("view promoList")
+
+            for (const element of info2) {
+                const row = table.insertRow()
+                console.log(element)
+                for (const e of infoList) {
+                    const cell = row.insertCell()
+                    cell.innerText = element[e]
+                }
+            }
+
+            viewLength2 = info2.length
+        }
+
+        function DeletePromo() {
+            const code = document.getElementById("dPromo").value
+            if (code == ''){
+                window.alert("Please fill in the blanks")
+                return
+            }
+            fetch("http://localhost:5000/manager/deletePromotion", {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    code: code
+                })
+            }).then((response) => response.json())
+            .then((data) => {
+                if (data.status === 'success'){
+                    window.alert("Promo code deleted successfully")
+                } else {
+                    window.alert("Promo code does not exist")
+                }
+            }) 
+        }
+
+        function UpdatePromo() {
+            const code = document.getElementById("upCode").value
+            const discount = document.getElementById("upDiscount").value
+            const date = document.getElementById("upDate").value
+
+            if (code  == '') {
+                window.alert("Please fill in code")
+                return
+            }
+            if (code != ''){
+                if(discount != '' && date == ''){
+                    fetch("http://localhost:5000/manager/updatePromotion", {
+                    method: "PUT",
+                    headers: {
+                    "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        code: code,
+                        discountRate: discount
+                    })
+                    })
+                    .then((response) => response.json())
+                    .then((data) => {
+                        if (data.status === 'success'){
+                            window.alert("Discount updated successfully")
+                        }
+                        else {
+                            window.alert("Promo Code Does not exist")
+                        }
+                    })
+                }
+
+
+                if(discount == '' && date != ''){
+                    fetch("http://localhost:5000/manager/updatePromotion", {
+                    method: "PUT",
+                    headers: {
+                    "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        code: code,
+                        expiryDate: date
+                    })
+                    })
+                    .then((response) => response.json())
+                    .then((data) => {
+                        if (data.status === 'success'){
+                            window.alert("Date updated successfully")
+                        }
+                        else {
+                            window.alert("Promo Code Does not exist")
+                        }
+                    })
+                }
+
+                if (discount != '' && date != ''){
+                    fetch("http://localhost:5000/manager/updatePromotion", {
+                    method: "PUT",
+                    headers: {
+                    "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        code: code,
+                        discountRate: discount,
+                        expiryDate: date
+                    })
+                    })
+                    .then((response) => response.json())
+                    .then((data) => {
+                    if (data.status === 'success'){
+                        window.alert("Promo Code updated successfully")
+                    }
+                    else {
+                        window.alert("Promo Code Does not exist")
+                    }
+                    })
+                }
+            }
         }
     </script>
 </body>
