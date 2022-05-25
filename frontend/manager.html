@@ -248,10 +248,7 @@
             for(let i = 0; i < files.files.length; i++) {
                 data1.append("files", files.files[i])
             }
-            console.log(data1)
-            console.log(files.value)
-            console.log(document.getElementById("name").value)
-            console.log(document.getElementById("price").value)
+
             if (name == '' || price == '' || files.value == '' ) {
                 window.alert("Please fill in the blank")
                 return
@@ -279,19 +276,36 @@
         
         }
 
-        function ViewMenu() {
-                const infoList = ["name", "price", "image"]
-                const table = document.getElementById("view MenuList")
+        function CreateTable(table, data) {
+            for (const element of data) {
+                const row = table.insertRow()
 
-                for (const element of info) {
-                    const row = table.insertRow()
-                    for (const e of infoList) {
-                        const cell = row.insertCell()
-                        cell.innerText = element[e]
-                    }
+                const nameCell = row.insertCell()
+                nameCell.innerText = element.name
+
+                const priceCell = row.insertCell()
+                priceCell.innerText = element.price
+
+                const imageCell = row.insertCell()
+
+                let img = ""
+                for (const name of element.image) {
+                    console.log(name)
+                    img += `<img src="../backend/images/${name}">`
                 }
 
-                viewLength = info.length
+                imageCell.innerHTML = img
+            }
+        }
+
+
+        function ViewMenu() {
+            const infoList = ["name", "price", "image"]
+            const table = document.getElementById("view MenuList")
+
+            CreateTable(table, info)
+
+            viewLength = info.length
         }
     
         function SearchMenu() {
@@ -319,14 +333,7 @@
             })
             .then((response) => response.json())
             .then((data) => {
-                for (const element of data) {
-                    const row = table.insertRow()
-
-                    for (const e of infoList) {
-                        const cell = row.insertCell()
-                        cell.innerText = element[e]
-                    }
-                }
+                CreateTable(table, data)
 
                 searchLength = data.length
             })
@@ -338,193 +345,67 @@
             var rename = document.getElementById("umNewName").value
             var files = document.getElementById("umNewImage")
 
-            var data = new FormData()
+            if (name == ''){
+                window.alert("Please fill in the name")
+                return
+            }
 
-                if (name == ''){
-                    window.alert("Please fill in the blanks")
-                    return
+            if (rename == '' && price == '' && files.value == ''){
+                window.alert("Please fill in at least one option")
+                return
+            }
+
+            if (files.value != '') {
+                const data = new FormData()
+                data.append("name", name)
+                for(let i = 0; i < files.files.length; i++) {
+                    data.append("files", files.files[i])
                 }
 
-                    if (rename == '' && price == '' && files.value == ''){
-                        window.alert("Please fill in the blanks")
-                        return
+                if (price != "") data.append("price", price)
+                if (rename != '') data.append("rename", rename)
+
+                fetch("http://localhost:5000/manager/updateMenu", {
+                method: "PUT",
+                body: data
+                })
+                .then((response) => response.json())
+                .then((data) => {
+                    if (data.status === 'success'){
+                        window.alert("Updated successfully")
                     }
-
-                    if (rename != '' && price != '' && files.value != ''){
-                        data.append('name',name)
-                        data.append('rename', rename)
-                        data.append('price', price)
-                        for(let i = 0; i < files.files.length; i++) {
-                            data.append("files", files.files[i])
-                        }
-                        for (var value of data.values()){
-                            console.log(value);
-                        }
-                        fetch("http://localhost:5000/manager/updateMenu", {
-                        method: "POST",
-                        body: data
-                    })
-                    .then((response) => response.json())
-                    .then((data) => {
-                        if (data.status === 'success'){
-                            window.alert("Menu Name, Image and Price Changed successfully")
-                        }
-                        else if (data.status === 'Menu name already exists'){
-                            window.alert("Menu Name already exists")
-                        }
-                        else {
-                            console.log(data)
-                            window.alert("Menu Item Does not exist")
-                        }
-                    })
+                    else if (data.status === 'Menu name already exists'){
+                        window.alert("Menu Name already exists")
                     }
-
-                    if (rename != '' && price == '' && files.value == ''){
-                        fetch("http://localhost:5000/manager/updateMenu", {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json"
-                        },
-                        body: JSON.stringify({
-                            name: name,
-                            rename: rename
-                        })
-                    })
-                    .then((response) => response.json())
-                    .then((data) => {
-                        if (data.status === 'success'){
-                            window.alert("Menu Name Changed successfully")
-                        }
-                        else if (data.status === 'Menu name already exists'){
-                            window.alert("Menu Name already exists")
-                        }
-                        else {
-                            window.alert("Menu Item Does not exist")
-                        }
-                    })
+                    else {
+                        window.alert("Menu Item Does not exist")
                     }
-                    
-                    if (rename == '' && price != '' && files.value == ''){
-                        fetch("http://localhost:5000/manager/updateMenu", {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json"
-                        },
-                        body: JSON.stringify({
-                            name: name,
-                            price: price
-                        })
-                    })
-                    .then((response) => response.json())
-                    .then((data) => {
-                        if (data.status === 'success'){
-                            window.alert("Menu Price Changed successfully")
-                        }
-                        else {
-                            window.alert("Menu Item Does not exist")
-                        }
-                    })
+                })
+            }
+            else {
+                const data = new FormData()
+                data.append("name", name)
+
+                if (price != "") data.append("price", price)
+                if (rename != '') data.append("rename", rename)
+
+                fetch("http://localhost:5000/manager/updateMenu", {
+                method: "PUT",
+                body: data
+                })
+                .then((response) => response.json())
+                .then((data) => {
+                    if (data.status === 'success'){
+                        window.alert("Changed successfully")
                     }
-
-                    if (rename == '' && price == '' && files.value != ''){
-                        data.append('name', name)
-                        for(let i = 0; i < files.files.length; i++) {
-                            data.append("files", files.files[i])
-                        }
-
-                        fetch("http://localhost:5000/manager/updateMenu", {
-                        method: "POST",
-                        body: data
-                    })
-                    .then((response) => response.json())
-                    .then((data) => {
-                        if (data.status === 'success'){
-                            window.alert("Menu Image Changed successfully")
-                        }
-                        else {
-                            console.log(data)
-                            window.alert("Menu Item Does not exist")
-                        }
-                    })
+                    else if (data.status === 'Menu name already exists'){
+                        window.alert("Menu Name already exists")
                     }
-
-                    if (rename != '' && price != '' && files.value == ''){
-                        fetch("http://localhost:5000/manager/updateMenu", {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json"
-                        },
-                        body: JSON.stringify({
-                            name: name,
-                            rename: rename,
-                            price: price
-                        })
-                    })
-                    .then((response) => response.json())
-                    .then((data) => {
-                        if (data.status === 'success'){
-                            window.alert("Menu Name and Price Changed successfully")
-                        }
-                        else if (data.status === 'Menu name already exists'){
-                            window.alert("Menu Name already exists")
-                        }
-                        else {
-                            window.alert("Menu Item Does not exist")
-                        }
-                    })
+                    else {
+                        window.alert("Menu Item Does not exist")
                     }
-                    
-                    if (rename != '' && price == '' && files.value != ''){
-                        data.append('name', name)
-                        data.append('rename', rename)
-                        for(let i = 0; i < files.files.length; i++) {
-                            data.append("files", files.files[i])
-                        }
-
-                        fetch("http://localhost:5000/manager/updateMenu", {
-                        method: "POST",
-                        body: data
-                    })
-                    .then((response) => response.json())
-                    .then((data) => {
-                        if (data.status === 'success'){
-                            window.alert("Menu Name and Image Changed successfully")
-                        }
-                        else if (data.status === 'Menu name already exists'){
-                            window.alert("Menu Name already exists")
-                        }
-                        else {
-                            window.alert("Menu Item Does not exist")
-                        }
-                    })
-                    }
-
-                    if (rename == '' && price != '' && files.value != ''){
-                        data.append('name', name)
-                        data.append('price', price)
-
-                        for(let i = 0; i < files.files.length; i++) {
-                            data.append("files", files.files[i])
-                        }
-
-                        fetch("http://localhost:5000/manager/updateMenu", {
-                        method: "POST",
-                        body: data
-                    })
-                    .then((response) => response.json())
-                    .then((data) => {
-                        if (data.status === 'success'){
-                            window.alert("Menu Price and Image Changed successfully")
-                        }
-                        else if (data.status === 'Menu name already exists'){
-                            window.alert("Menu Name already exists")
-                        }
-                        else {
-                            window.alert("Menu Item Does not exist")
-                        }
-                    })
-                    }
-                
+                })
+            }
         }
 
         function DeleteMenu() {
