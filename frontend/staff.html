@@ -49,12 +49,13 @@
 <body>
     <h1>Staff Main</h1>
         <div class="topnav">
-            <a id = "vieworder">View Orders</a>
+            <a id = "vieworder">View Unconfirmed Orders</a>
+            <a id = "viewallorder">View All Orders</a>
             <a id = "searchorder">Search Orders</a>
             <a id = "logout">Logout</a>
           </div>
           <div>
-            <!-- view order -->
+            <!-- view unconfirmed order -->
             <div id = "pg0" style="display: none">
                 <table id="view orderList">
                     <tr>
@@ -63,8 +64,17 @@
                 </table>
             </div>
 
+            <!-- view all orders -->
+            <div id = "pg1" style="display: none">
+                <table id="view all orderList">
+                    <tr>
+                        <th>Table Number</th><th>Menus</th><th>Total Amount</th><th>Confirm Order</th><th>Reject Order</th>
+                    </tr>
+                </table>
+            </div>
+
             <!-- search order -->
-            <div id="pg1" style="display: none">
+            <div id="pg2" style="display: none">
                 <div class="filter">
                     <label>tableNumber: <input type="text" id="tableNumber" placeholder="Enter tableNumber"/></label>
                     <button onclick="SearchOrder()">Search</button>
@@ -78,10 +88,11 @@
 
     <script>   
         let viewLength = 0
+        let viewAllLength = 0
         let searchLength = 0
 
         function ChangeEffect(func) {
-            const navInfo = ["vieworder", "searchorder"]
+            const navInfo = ["vieworder", "viewallorder", "searchorder"]
             document.getElementById(func).className = "active"
             
             for (const e in navInfo) {
@@ -96,7 +107,12 @@
 
         function RefreshTable(tableName) {
             const table = document.getElementById(`${tableName} orderList`)
-            const length = tableName === "view" ? viewLength : searchLength
+            let length
+
+            if (tableName == "view") length = viewLength
+            else if (tableName == "view all") length = viewAllLength
+            else if (tableName == "search") length = searchLength
+
             for (let i = 0; i < length; i++) {
                 table.deleteRow(-1)
             }
@@ -113,6 +129,20 @@
             .then((data) => {
                 viewLength = data.length
                 ViewOrder(data)
+            })
+        } )
+
+        document.getElementById("viewallorder").addEventListener("click", function(){
+            RefreshTable("view all")
+            ChangeEffect("viewallorder")
+
+            fetch("http://localhost:5000/staff/viewAllOrder", {
+            method: "GET",
+            })
+            .then((response) => response.json())
+            .then((data) => {
+                viewAllLength = data.length
+                ViewAllOrder(data)
             })
         } )
 
@@ -147,7 +177,11 @@
                 const confirmCell = row.insertCell()
                 const deleteCell = row.insertCell()
 
-                if (element.confirmed) {
+                if (element.paid) {
+                    confirmCell.innerText = "paid"
+                    deleteCell.innerText = "paid"
+                }
+                else if (element.confirmed) {
                     confirmCell.innerText = "confirmed"
                     deleteCell.innerText = "confirmed"
                 }
@@ -160,6 +194,11 @@
 
         function ViewOrder(data) {
             const table = document.getElementById("view orderList")
+            CreateTable(table, data)
+        }
+
+        function ViewAllOrder(data) {
+            const table = document.getElementById("view all orderList")
             CreateTable(table, data)
         }
 

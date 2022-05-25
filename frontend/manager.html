@@ -566,9 +566,7 @@
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify({
-                    code: document.getElementById("code").value,
-                    discountRate: document.getElementById("discount").value,
-                    date: document.getElementById("date").value
+
                 })
             }).then((response) => response.json())
             .then((data) => {
@@ -582,11 +580,12 @@
         }
 
         function ViewPromo() {
-            const infoList = ["code", "discountRate", "date"]
+
             const table = document.getElementById("view promoList")
 
             for (const element of info2) {
                 const row = table.insertRow()
+
                 for (const e of infoList) {
                     const cell = row.insertCell()
                     cell.innerText = element[e]
@@ -638,7 +637,7 @@
                     },
                     body: JSON.stringify({
                         code: code,
-                        discount: discount
+
                     })
                     })
                     .then((response) => response.json())
@@ -661,7 +660,7 @@
                     },
                     body: JSON.stringify({
                         code: code,
-                        date: date
+
                     })
                     })
                     .then((response) => response.json())
@@ -683,8 +682,7 @@
                     },
                     body: JSON.stringify({
                         code: code,
-                        discount: discount,
-                        date: date
+
                     })
                     })
                     .then((response) => response.json())
