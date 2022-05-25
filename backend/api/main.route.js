@@ -68,7 +68,7 @@ router.get("/manager/viewMenu", MenuCtrl.apiViewMenu)
 router.post("/manager/searchMenu", MenuCtrl.apiSearchMenu)
 
 // (name, rename = None, price = None, image = None)
-router.put("/manager/updateMenu", MenuCtrl.apiUpdateMenu)
+router.put("/manager/updateMenu", Multer.array("files", 10), MenuCtrl.apiUpdateMenu)
 
 // (name)
 router.delete("/manager/deleteMenu", MenuCtrl.apiDeleteMenu)
