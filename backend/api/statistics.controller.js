@@ -1,100 +1,103 @@
-import OrdersDAO from "../dao/ordersDAO.js"
+import OrdersDAO from "../dao/ordersDAO.js";
 
-export default class StatisticsController{
+export default class StatisticsController {
     static async setQuery(body, filter) {
-        const year = body.year
-        const month = body.month
+        const year = Number(body.year);
+        const month = Number(body.month);
 
-        let query = { 
-            "$expr": {
-                "$and": [
-                    { "$eq": [{ "$year": "$date" }, year] },
-                    { "$eq": [{ "$month": "$date" }, month] }
-                ] 
+        let query = {
+            $expr: {
+                $and: [
+                    { $eq: [{ $year: "$date" }, year] },
+                    { $eq: [{ $month: "$date" }, month] },
+                ],
             },
-            paid: true
-        }
+            paid: true,
+        };
 
         if (filter == "week") {
-            const from = body.from
-            const to = body.to
+            const from = Number(body.from);
+            const to = Number(body.to);
 
             query["$expr"]["$and"].push(
-                { "$gte": [{ "$dayOfMonth": "$date"}, from]},
-                { "$lte": [{ "$dayOfMonth": "$date"}, to]}
-            )
-        }
-        else if (filter == "day") {
-            const day = body.day
+                { $gte: [{ $dayOfMonth: "$date" }, from] },
+                { $lte: [{ $dayOfMonth: "$date" }, to] }
+            );
+        } else if (filter == "day") {
+            const day = Number(body.day);
 
-            query["$expr"]["$and"].push({ "$eq": [{ "$dayOfMonth": "$date" }, day] })
+            query["$expr"]["$and"].push({
+                $eq: [{ $dayOfMonth: "$date" }, day],
+            });
         }
 
-        return query
+        return query;
     }
 
     static apiGetVisiting = async (req, res) => {
         try {
-            const filter = req.body.filter
-            const query = await this.setQuery(req.body, filter)
-            
-            const orders = await OrdersDAO.getAllOrders(query)
-            const result = orders.length
+            const filter = req.body.filter;
+            const query = await this.setQuery(req.body, filter);
+
+            const orders = await OrdersDAO.getAllOrders(query);
+            const result = orders.length;
 
             //return result
-            res.json(result)
+            res.json(result);
         } catch (err) {
-            res.status(400).json({ error: err.message })
+            res.status(400).json({ error: err.message });
         }
-    }
+    };
 
     static apiGetTotalAmount = async (req, res) => {
         try {
-            const filter = req.body.filter
-            const query = await this.setQuery(req.body, filter)
-            
-            const orders = await OrdersDAO.getAllOrders(query)
-            let result = 0
+            const filter = req.body.filter;
+            const query = await this.setQuery(req.body, filter);
+
+            const orders = await OrdersDAO.getAllOrders(query);
+            let result = 0;
 
             if (orders.length == 1) {
-                result = orders[0].totalAmount
-            }
-            else if (orders.length > 1) {
-                result = orders.reduce( (prev, curr) => prev.totalAmount += curr.totalAmount )
+                result = orders[0].totalAmount;
+            } else if (orders.length > 1) {
+                result = orders.reduce(
+                    (prev, curr) => (prev.totalAmount += curr.totalAmount)
+                );
             }
 
             //return result
-            res.json(result)
+            res.json(result);
         } catch (err) {
-            res.status(400).json({ error: err.message })
+            res.status(400).json({ error: err.message });
         }
-    }
+    };
 
     static apiGetPreference = async (req, res) => {
         try {
-            const filter = req.body.filter
-            const query = await this.setQuery(req.body, filter)
-            
-            let orders = await OrdersDAO.getAllOrders(query)
-            let result = orders.map(e => e.menus).flat()
-            .map(({ price, amount, ...rest}) => rest)
-            .reduce( (curr, ele) => {
-                let exist = curr.filter( cur => cur.name == ele.name)
-                if (exist.length) {
-                    exist[0].quantity += ele.quantity
-                }
-                else {
-                    curr.push(ele)
-                }
+            const filter = req.body.filter;
+            const query = await this.setQuery(req.body, filter);
 
-                return curr
-            }, []
-            )
+            let orders = await OrdersDAO.getAllOrders(query);
+            let result = orders
+                .map(e => e.menus)
+                .flat()
+                .map(({ price, amount, ...rest }) => rest)
+                .reduce((curr, ele) => {
+                    let exist = curr.filter(cur => cur.name == ele.name);
+                    if (exist.length) {
+                        exist[0].quantity += ele.quantity;
+                    } else {
+                        curr.push(ele);
+                    }
 
+                    return curr;
+                }, []);
+
+            console.log(result);
             //return result
-            res.json(result)
+            res.json(result);
         } catch (err) {
-            res.status(400).json({ error: err.message })
+            res.status(400).json({ error: err.message });
         }
-    }
+    };
 }

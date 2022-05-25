@@ -1,245 +1,217 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    </head>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+        }
 
-</head>
-<style>
-    body {
-      margin: 0;
-      font-family: Arial, Helvetica, sans-serif;
-    }
-    
-    table {
-    width: 100%;
-    border: 1px solid #444444;
-    border-collapse: collapse;
-    }
-    
-    th, td {
-        border: 1px solid #444444;
-    }
+        table {
+            width: 100%;
+            border: 1px solid #444444;
+            border-collapse: collapse;
+        }
 
-    .topnav {
-      overflow: hidden;
-      background-color: #333;
-    }
-    
-    .topnav a {
-      float: left;
-      color: #f2f2f2;
-      text-align: center;
-      padding: 14px 16px;
-      text-decoration: none;
-      font-size: 17px;
-    }
-    
-    .topnav a:hover {
-      background-color: #ddd;
-      color: black;
-    }
-    
-    .topnav a.active {
-      background-color: #04AA6D;
-      color: white;
-    }
+        th,
+        td {
+            border: 1px solid #444444;
+        }
+
+        .topnav {
+            overflow: hidden;
+            background-color: #333;
+        }
+
+        .topnav a {
+            float: left;
+            color: #f2f2f2;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+            font-size: 17px;
+        }
+
+        .topnav a:hover {
+            background-color: #ddd;
+            color: black;
+        }
+
+        .topnav a.active {
+            background-color: #04aa6d;
+            color: white;
+        }
     </style>
-<body>
-    <h1>Owner Main</h1>
+    <body>
+        <h1>Owner Main</h1>
         <div class="topnav">
-            <a id = "visiting">Visiting</a>
-            <a id = "totalamount">Total Amount</a>
-            <a id = "preference">Preference</a>
-            <a id = "logout">Logout</a>
-          </div>
-          <div>
-            <!-- visiting -->
-            <div id = "pg0" style="display: none">
-                <div id="filter div">
-                    <select id="filter">
-                        <option value="month">Month</option>
-                        <option value="week">Week</option>
-                        <option value="day">Day</option>
-                    </select>
-                </div>
-                <table id="view orderList">
-                    <tr>
-                        <th>Table Number</th><th>Menus</th><th>Total Amount</th><th>Confirm Order</th><th>Reject Order</th>
-                    </tr>
-                </table>
+            <a id="visiting" class="active">Visiting</a>
+            <a id="totalamount">Total Amount</a>
+            <a id="preference">Preference</a>
+            <a id="logout">Logout</a>
+        </div>
+        <div id="filter div">
+            <label>
+                Filter:
+                <select id="filter">
+                    <option value="month">Month</option>
+                    <option value="week">Week</option>
+                    <option value="day">Day</option>
+                </select>
+            </label>
+            <br />
+            <label
+                >Year:
+                <input type="text" id="year" placeholder="Enter Year" /></label
+            ><br />
+            <label>
+                Month:
+                <select id="month">
+                    <option value="01">Jan</option>
+                    <option value="02">Feb</option>
+                    <option value="03">Mar</option>
+                    <option value="04">Apr</option>
+                    <option value="05">May</option>
+                    <option value="06">Jun</option>
+                    <option value="07">Jul</option>
+                    <option value="08">Aug</option>
+                    <option value="09">Sep</option>
+                    <option value="10">Oct</option>
+                    <option value="11">Nov</option>
+                    <option value="12">Dec</option>
+                </select>
+            </label>
+            <br />
+            <div id="week div" style="display: none">
+                <label
+                    >From:<input type="text" id="from" placeholder="Enter From"
+                /></label>
+                <label
+                    >To: <input type="text" id="to" placeholder="Enter To"
+                /></label>
             </div>
-
-            <!-- total amount -->
-            <div id="pg1" style="display: none">
-                <div class="filter">
-                    <label>tableNumber: <input type="text" id="tableNumber" placeholder="Enter tableNumber"/></label>
-                    <button onclick="SearchOrder()">Search</button>
-                </div>
-                <table id="search orderList">
-                    <tr>
-                        <th>Table Number</th><th>Menus</th><th>Total Amount</th><th>Confirm Order</th><th>Reject Order</th>
-                    </tr>
-                </table>
+            <div id="day div" style="display: none">
+                <label
+                    >Day: <input type="text" id="day" placeholder="Enter Day"
+                /></label>
             </div>
+        </div>
+        <br />
 
-    <script>   
-        let viewLength = 0
-        let searchLength = 0
+        <!-- visiting -->
+        <div id="pg0">
+            <button onclick="Check('visiting')">Check</button>
+            <div id="vvalue"></div>
+        </div>
 
-        function ChangeEffect(func) {
-            const navInfo = ["visiting", "totalamount", "preference"]
-            document.getElementById(func).className = "active"
-            
-            for (const e in navInfo) {
-                if (navInfo[e] == func) {
-                    document.getElementById(`pg${e}`).style.display = "block"
-                    continue
-                }
-                document.getElementById(navInfo[e]).className = " "
-                document.getElementById(`pg${e}`).style.display = "none"
-            }
-        }
+        <!-- total amount -->
+        <div id="pg1" style="display: none">
+            <button onclick="Check('totalamount')">Check</button>
+            <div id="tvalue"></div>
+        </div>
 
-        function RefreshTable(tableName) {
-            const table = document.getElementById(`${tableName} orderList`)
-            const length = tableName === "view" ? viewLength : searchLength
-            for (let i = 0; i < length; i++) {
-                table.deleteRow(-1)
-            }
-        }
+        <!-- preference -->
+        <div id="pg2" style="display: none">
+            <button onclick="Check('preference')">Check</button>
+            <div id="pvalue"></div>
+        </div>
 
-        document.getElementById("visiting").addEventListener("click", function(){
-            RefreshTable("view")
-            ChangeEffect("visiting")
+        <script>
+            function ChangeEffect(func) {
+                const navInfo = ["visiting", "totalamount", "preference"];
+                document.getElementById(func).className = "active";
 
-            fetch("http://localhost:5000/staff/viewOrder", {
-            method: "GET",
-            })
-            .then((response) => response.json())
-            .then((data) => {
-                viewLength = data.length
-                ViewOrder(data)
-            })
-        } )
-
-        document.getElementById("searchorder").addEventListener("click", function() {
-            ChangeEffect("searchorder")
-        } )
-
-        document.getElementById("logout").addEventListener("click", function() {
-            fetch("htt[://localhost:5000/staff/logout", {
-                method: "get"
-            })
-            location.replace("http://localhost:5000/")
-        } )
-
-        function CreateTable(table, data) {
-            for (const element of data) {
-                const row = table.insertRow()
-
-                const tableNumberCell = row.insertCell()
-                tableNumberCell.innerText = element.tableNumber
-
-                const menusCell = row.insertCell()
-                let value = ""
-                for (const menu of element.menus) {
-                    value += JSON.stringify(menu)
-                }
-                menusCell.innerText = value
-
-                const totalAmountCell = row.insertCell()
-                totalAmountCell.innerText = element.totalAmount
-
-                const confirmCell = row.insertCell()
-                const deleteCell = row.insertCell()
-
-                if (element.confirmed) {
-                    confirmCell.innerText = "confirmed"
-                    deleteCell.innerText = "confirmed"
-                }
-                else {
-                    confirmCell.innerHTML = `<button onClick="ConfirmOrder('${element._id}')">Confirm</button>`
-                    deleteCell.innerHTML = `<button onClick="DeleteOrder('${element._id}')">Delete</button>`
+                for (const e in navInfo) {
+                    if (navInfo[e] == func) {
+                        document.getElementById(`pg${e}`).style.display =
+                            "block";
+                        continue;
+                    }
+                    document.getElementById(navInfo[e]).className = " ";
+                    document.getElementById(`pg${e}`).style.display = "none";
                 }
             }
-        }
 
-        function ViewOrder(data) {
-            const table = document.getElementById("view orderList")
-            CreateTable(table, data)
-        }
+            function ChangeFilterEffect(func) {
+                if (func == "month") {
+                    document.getElementById("week div").style.display = "none";
+                    document.getElementById("day div").style.display = "none";
+                } else if (func == "week") {
+                    document.getElementById("week div").style.display = "block";
+                    document.getElementById("day div").style.display = "none";
+                } else if (func == "day") {
+                    document.getElementById("week div").style.display = "none";
+                    document.getElementById("day div").style.display = "block";
+                }
+            }
 
-        function ConfirmOrder(id) {
-            fetch("http://localhost:5000/staff/confirmOrder", {
-                method: "PUT",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    _id: id
+            document
+                .getElementById("visiting")
+                .addEventListener("click", function () {
+                    ChangeEffect("visiting");
+                });
+
+            document
+                .getElementById("totalamount")
+                .addEventListener("click", function () {
+                    ChangeEffect("totalamount");
+                });
+
+            document
+                .getElementById("preference")
+                .addEventListener("click", function () {
+                    ChangeEffect("preference");
+                });
+
+            document
+                .getElementById("logout")
+                .addEventListener("click", function () {
+                    fetch("htt[://localhost:5000/staff/logout", {
+                        method: "get",
+                    });
+                    location.replace("http://localhost:5000/");
+                });
+
+            document
+                .getElementById("filter")
+                .addEventListener("change", function (e) {
+                    ChangeFilterEffect(e.target.value);
+                });
+
+            function Check(func) {
+                const filter = document.getElementById("filter").value;
+                const year = document.getElementById("year").value;
+                const month = document.getElementById("month").value;
+                let body = {
+                    filter: filter,
+                    year: year,
+                    month: month,
+                };
+
+                if (filter == "week") {
+                    body["from"] = document.getElementById("from").value;
+                    body["to"] = document.getElementById("to").value;
+                } else if (filter == "day") {
+                    body["day"] = document.getElementById("day").value;
+                }
+
+                fetch(`http://localhost:5000/owner/${func}`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(body),
                 })
-            })
-            .then((response) => response.json())
-            .then((data) => {
-                if (data.status === 'success') {
-                    window.alert("Confirmed")
-                    location.reload()
-                }
-                else {
-                    window.alert("fail to confrim")
-                }
-            })
-        }
-
-        function DeleteOrder(id) {
-            fetch("http://localhost:5000/staff/deleteOrder", {
-                method: "DELETE",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    _id: id
-                })
-            })
-            .then((response) => response.json())
-            .then((data) => {
-                if (data.status === 'success') {
-                    window.alert("Deleted")
-                    location.reload()
-                }
-                else {
-                    window.alert("fail to delete")
-                }
-            })
-        }
-
-        function SearchOrder() {
-            RefreshTable("search")
-            const table = document.getElementById("search orderList")
-            const tableNumber = document.getElementById("tableNumber").value
-
-            if (tableNumber == "" ) {
-                window.alert("Please fill in the blank")
-                return
+                    .then(response => response.json())
+                    .then(data => {
+                        const div = document.getElementById(func[0] + "value");
+                        div.innerText = JSON.stringify(data);
+                    });
             }
-
-            fetch("http://localhost:5000/staff/searchOrder", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    tableNumber: tableNumber
-                })
-            })
-            .then((response) => response.json())
-            .then((data) => {
-                CreateTable(table, data)
-                searchLength = data.length
-            })
-        }
-    </script>
-</body>
+        </script>
+    </body>
 </html>
