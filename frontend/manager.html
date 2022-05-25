@@ -438,16 +438,16 @@
                 window.alert("Please fill in the blank")
                 return
             }
-            console.log(code)
-            console.log(discount)
-            console.log(date)
+
             fetch("http://localhost:5000/manager/createPromotion", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify({
-
+                    code: code,
+                    discountRate: discount,
+                    expiryDate: date
                 })
             }).then((response) => response.json())
             .then((data) => {
@@ -461,7 +461,7 @@
         }
 
         function ViewPromo() {
-
+            const infoList = ["code", "discountRate", "expiryDate"]
             const table = document.getElementById("view promoList")
 
             for (const element of info2) {
@@ -504,79 +504,37 @@
             const code = document.getElementById("upCode").value
             const discount = document.getElementById("upDiscount").value
             const date = document.getElementById("upDate").value
+            let body = { code: code }
 
             if (code  == '') {
                 window.alert("Please fill in code")
                 return
             }
-            if (code != ''){
-                if(discount != '' && date == ''){
-                    fetch("http://localhost:5000/manager/updatePromotion", {
-                    method: "PUT",
-                    headers: {
-                    "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({
-                        code: code,
 
-                    })
-                    })
-                    .then((response) => response.json())
-                    .then((data) => {
-                        if (data.status === 'success'){
-                            window.alert("Discount updated successfully")
-                        }
-                        else {
-                            window.alert("Promo Code Does not exist")
-                        }
-                    })
-                }
+            if (discount == '' && date == '') {
+                window.alert("Please fill in at least one option")
+                return
+            }
 
+            if (discount != '') body["discountRate"] = discount
+            if (date != '') body["expiryDate"] = date
 
-                if(discount == '' && date != ''){
-                    fetch("http://localhost:5000/manager/updatePromotion", {
-                    method: "PUT",
-                    headers: {
-                    "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({
-                        code: code,
-
-                    })
-                    })
-                    .then((response) => response.json())
-                    .then((data) => {
-                        if (data.status === 'success'){
-                            window.alert("Date updated successfully")
-                        }
-                        else {
-                            window.alert("Promo Code Does not exist")
-                        }
-                    })
-                }
-
-                if (discount != '' && date != ''){
-                    fetch("http://localhost:5000/manager/updatePromotion", {
-                    method: "PUT",
-                    headers: {
-                    "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({
-                        code: code,
-
-                    })
-                    })
-                    .then((response) => response.json())
-                    .then((data) => {
+            fetch("http://localhost:5000/manager/updatePromotion", {
+                method: "PUT",
+                headers: {
+                "Content-Type": "application/json"
+                },
+                body: JSON.stringify(body)
+                })
+                .then((response) => response.json())
+                .then((data) => {
                     if (data.status === 'success'){
-                        window.alert("Promo Code updated successfully")
+                        window.alert("Discount updated successfully")
                     }
                     else {
                         window.alert("Promo Code Does not exist")
                     }
-                    })
-                }
-            }
+                })
         }
     </script>
 </body>
