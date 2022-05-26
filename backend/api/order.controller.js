@@ -8,7 +8,6 @@ export default class OrderController {
             const tableNumber = req.body.tableNumber;
             let menus = req.body.menus;
             const date = new Date();
-            date.setDate(date.getDate() + 1);
             let menusArray = [];
             let totalAmount = 0;
 
@@ -113,8 +112,15 @@ export default class OrderController {
                 return res.json({ status: "nothing to pay" });
             }
 
-            const promotion =
-                (await PromotionsDAO.getPromotion(req.body.code)) || false;
+            const code = req.body.code || false;
+            const promotion = code
+                ? await PromotionsDAO.getPromotion(code)
+                : false;
+
+            if (promotion == null) {
+                return res.json({ status: "code does not exist" });
+            }
+
             let discountedAmount = orders[0].totalAmount;
             let menus = orders[0].menus;
             let date = orders[0].date;
@@ -165,8 +171,8 @@ export default class OrderController {
 
             res.json({
                 status: "success",
-                discountRate: promotion.discountRate,
-                totalAmount: discountedAmount,
+                menus: menus,
+                discountedAmount: discountedAmount,
             });
         } catch (err) {
             res.status(400).json({ error: err.message });
