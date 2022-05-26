@@ -81,7 +81,14 @@ export default class PromotionController {
     static async apiDeletePromotion(req, res) {
         try {
             const code = req.body.code;
-            await PromotionsDAO.deletePromotion(code);
+
+            const checkCode = await PromotionsDAO.getPromotion(code);
+
+            if (checkCode) {
+                await PromotionsDAO.deletePromotion(code);
+            } else {
+                return res.json({ status: "code does not exist" });
+            }
 
             res.json({ status: "success" });
         } catch (err) {
