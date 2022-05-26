@@ -56,7 +56,6 @@
             <a id="searchmenu" class="active">Search Menu</a>
             <a id="viewmenu">View Menu</a>
             <a id="vieworder">View Order</a>
-            <a id="payorder">Payment</a>
         </div>
         <div>
             <div id="pg0">
@@ -78,6 +77,7 @@
                         </tr>
                     </tbody>
                 </table>
+                <button onclick="Order('search')">Order</button>
             </div>
 
             <!-- view Menu Item-->
@@ -92,62 +92,37 @@
                         </tr>
                     </tbody>
                 </table>
-                <button onclick="Order()">Order</button>
+                <button onclick="Order('view')">Order</button>
             </div>
 
             <div id="pg2" style="display: none">
-                <div class="filter">
-                    <input
-                        type="text"
-                        id="search order"
-                        placeholder="Enter Table Number to Search for Order"
-                        style="width: 200px"
-                    />
-                    <button onclick="SearchOrder()">View Order</button>
-                </div>
-                <table id="search OrderList">
+                <table id="view OrderList">
                     <tbody>
                         <tr>
                             <th>TABLE NUMBER</th>
                             <th>ORDER</th>
                             <th>TOTAL AMOUNT</th>
-                            <th>DATE</th>
-                            <th>CONFIRMATION</th>
-                            <th>PAYMENT</th>
+                            <th>CANCEL ORDER</th>
                         </tr>
                     </tbody>
                 </table>
-            </div>
-
-            <div id="pg3" style="display: none">
-                <label
-                    >Table Number:<input
-                        type="text"
-                        id="paymenttablenum"
-                        placeholder="Enter Table Number:"
-                /></label>
                 <label
                     >Promo Code :<input
                         type="text"
                         id="paymentpromo"
-                        placeholder="Enter Promo Code:"
+                        placeholder="Leave it blank if N/A"
                 /></label>
                 <button onclick="Payment()">Pay now</button>
+                <div id="bill"></div>
             </div>
         </div>
         <script>
-            let info = null;
             let viewLength = 0;
             let searchLength = 0;
-            let searchLength2 = 0;
+            let orderLength = 0;
 
             function ChangeEffect(func) {
-                const navInfo = [
-                    "searchmenu",
-                    "viewmenu",
-                    "vieworder",
-                    "payorder",
-                ];
+                const navInfo = ["searchmenu", "viewmenu", "vieworder"];
                 document.getElementById(func).className = "active";
 
                 for (const e in navInfo) {
@@ -175,8 +150,8 @@
                     })
                         .then(response => response.json())
                         .then(data => {
-                            info = data;
-                            ViewMenu();
+                            CreateMenuTable(table, data);
+                            viewLength = data.length;
                         });
                 });
 
@@ -189,20 +164,29 @@
             document
                 .getElementById("vieworder")
                 .addEventListener("click", function () {
+                    const table = document.getElementById("view OrderList");
+                    for (let i = 0; i < orderLength; i++) {
+                        table.deleteRow(-1);
+                    }
                     ChangeEffect("vieworder");
-                });
 
-            document
-                .getElementById("payorder")
-                .addEventListener("click", function () {
-                    ChangeEffect("payorder");
-                });
+                    const tableNumber = location.search.split("=")[1];
 
-            function ViewMenu() {
-                const table = document.getElementById("view MenuList");
-                CreateMenuTable(table, info);
-                viewLength = info.length;
-            }
+                    fetch("http://localhost:5000/staff/searchOrder", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({
+                            tableNumber: tableNumber,
+                        }),
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            CreateOrderTable(table, data);
+                            orderLength = data.length;
+                        });
+                });
 
             function CreateMenuTable(table, data) {
                 for (const element of data) {
@@ -217,42 +201,41 @@
 
                     const imageCell = row.insertCell();
 
-                    let img = "";
-                    for (const name of element.image) {
-                        console.log(name);
-                        img += `<img src="../backend/images/${name}">`;
-                    }
-                    imageCell.innerHTML = img;
+                    // let img = "";
+                    // for (const name of element.image) {
+                    //     img += `<img src="../backend/images/${name}">`;
+                    // }
+                    // imageCell.innerHTML = img;
 
                     const quantityCell = row.insertCell();
-                    quantityCell.className = "menu quantity";
-                    quantityCell.innerHTML = `<input type="text" placeholder="Enter Quantity"/>`;
+                    quantityCell.innerHTML = `<input type="text" class="menu quantity" placeholder="Enter Quantity"/>`;
                 }
             }
 
-            function CreateTable2(table, data) {
+            function CreateOrderTable(table, data) {
                 for (const element of data) {
                     const row = table.insertRow();
 
-                    const tableNumCell = row.insertCell();
-                    tableNumCell.innerText = element.tableNumber;
+                    const tableNumberCell = row.insertCell();
+                    tableNumberCell.innerText = element.tableNumber;
 
-                    const orderCell = row.insertCell();
-                    for (var x = 0; x < element.menus.length; x++) {
-                        orderCell.innerText += element.menus[x];
+                    const menusCell = row.insertCell();
+                    let value = "";
+                    for (const menu of element.menus) {
+                        value += JSON.stringify(menu);
                     }
+                    menusCell.innerText = value;
 
-                    const totalamountCell = row.insertCell();
-                    totalamountCell.innerText = element.totalAmount;
+                    const totalAmountCell = row.insertCell();
+                    totalAmountCell.innerText = element.totalAmount;
 
-                    const dateCell = row.insertCell();
-                    dateCell.innerText = element.date;
+                    const deleteCell = row.insertCell();
 
-                    const confirmationCell = row.insertCell();
-                    confirmationCell.innerText = element.confirmed;
-
-                    const paymentCell = row.insertCell();
-                    paymentCell.innerText = element.paid;
+                    if (element.confirmed) {
+                        deleteCell.innerText = "confirmed";
+                    } else {
+                        deleteCell.innerHTML = `<button onClick="DeleteOrder('${element._id}')">Delete</button>`;
+                    }
                 }
             }
 
@@ -262,7 +245,6 @@
                     table.deleteRow(-1);
                 }
 
-                const infoList = ["name", "price", "image"];
                 const name = document.getElementById("search value").value;
 
                 if (name == "") {
@@ -281,58 +263,51 @@
                 })
                     .then(response => response.json())
                     .then(data => {
-                        CreateTable(table, data);
-
+                        CreateMenuTable(table, data);
                         searchLength = data.length;
                     });
             }
 
-            function CancelOrder() {
-                const tableNumber = document.getElementById("cOrder").value;
-                if (tableNumber == "") {
-                    window.alert("Please fill in the blanks");
-                    return;
-                }
+            function DeleteOrder(id) {
                 fetch("http://localhost:5000/customer/cancelOrder", {
                     method: "DELETE",
                     headers: {
                         "Content-Type": "application/json",
                     },
                     body: JSON.stringify({
-                        tableNumber: tableNumber,
+                        _id: id,
                     }),
                 })
                     .then(response => response.json())
                     .then(data => {
                         if (data.status === "success") {
-                            window.alert("Promo code deleted successfully");
+                            window.alert("Deleted");
+                            location.reload();
                         } else {
-                            window.alert("Promo code does not exist");
+                            window.alert("fail to delete");
                         }
                     });
             }
 
-            function CreateOrder(func) {
+            function Order(func) {
                 const tableNumber = location.search.split("=")[1];
                 const table = document.getElementById(func + " MenuList");
+                const length = func == "view" ? viewLength : searchLength;
                 let menus = [];
                 let count = 0;
 
-                for (
-                    let i = 0;
-                    i < func == "view" ? viewLength : searchLength;
-                    i++
-                ) {
-                    const name = table.getElementsByClassName("menu name")[i];
+                for (let i = 0; i < length; i++) {
+                    const name =
+                        table.getElementsByClassName("menu name")[i].innerHTML;
                     const quantity =
-                        table.getElementsByClassName("menu quantity")[i];
+                        table.getElementsByClassName("menu quantity")[i].value;
 
                     if (quantity == "") {
                         count++;
                         continue;
                     }
 
-                    if (!Number.isInteger(quantity)) {
+                    if (!Number.isInteger(Number(quantity))) {
                         window.alert("quantity has to be number");
                         return;
                     }
@@ -344,7 +319,7 @@
                     menus.push(menusobj);
                 }
 
-                if (count == (func == "view" ? viewLength : searchLength)) {
+                if (count == length) {
                     window.alert("No item added");
                     return;
                 }
@@ -369,74 +344,36 @@
                     });
             }
 
-            function SearchOrder() {
-                const table = document.getElementById("search OrderList");
-                for (let i = 0; i < searchLength2; i++) {
-                    table.deleteRow(-1);
-                }
-
-                const infoList = [
-                    "tableNumber",
-                    "menus",
-                    "totalAmount",
-                    "confirmed",
-                    "paid",
-                ];
-                const tableNumber =
-                    document.getElementById("search order").value;
-
-                if (tableNumber == "") {
-                    window.alert("Please fill in the blank");
-                    return;
-                }
-
-                fetch("http://localhost:5000/customer/viewOrder", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({
-                        tableNumber: tableNumber,
-                    }),
-                })
-                    .then(response => response.json())
-                    .then(data => {
-                        CreateTable2(table, data);
-
-                        searchLength2 = data.length;
-                    });
-            }
-
             function Payment() {
-                const tableNumber =
-                    document.getElementById("paymenttablenum").value;
+                const tableNumber = location.search.split("=")[1];
                 const code = document.getElementById("paymentpromo").value;
+                let body = { tableNumber: tableNumber };
 
-                if (tableNumber == "") {
-                    window.alert("Please fill in the blanks");
-                    return;
-                }
+                if (code != "") body["code"] = code;
 
                 fetch("http://localhost:5000/customer/payOrder", {
                     method: "PUT",
                     headers: {
                         "Content-Type": "application/json",
                     },
-                    body: JSON.stringify({
-                        tableNumber: tableNumber,
-                        code: code,
-                    }),
+                    body: JSON.stringify(body),
                 })
                     .then(response => response.json())
                     .then(data => {
                         if (data.status === "success") {
-                            window.alert("Order received");
+                            const bill = document.getElementById("bill");
+                            bill.innerText =
+                                "Menus: " +
+                                JSON.stringify(data.menus) +
+                                "\n Total Amount: " +
+                                JSON.stringify(data.discountedAmount);
+                            window.alert("Approved!");
                         } else if (data.status === "nothing to pay") {
-                            window.alert("No payment required");
+                            window.alert("There is no order made.");
                         } else if (data.status === "Promotion code expired") {
                             window.alert("Promo code has expired");
-                        } else {
-                            window.alert("Payment Error please try again");
+                        } else if (data.status === "code does not exist") {
+                            window.alert("code does not exist");
                         }
                     });
             }
