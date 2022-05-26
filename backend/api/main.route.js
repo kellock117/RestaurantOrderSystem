@@ -37,9 +37,6 @@ router.delete("/admin/delete", UserCtrl.apiDeleteUser);
 // ()
 router.get("/admin/logout", LoginCtrl.apiLogout);
 
-// ()
-router.get("/admin/userinfo", UserCtrl.apiGetUserInfo);
-
 //----------------------------------main----------------------------------
 router
     .route("/")
@@ -93,9 +90,6 @@ router.delete("/manager/deletePromotion", PromotionCtrl.apiDeletePromotion);
 // ()
 router.get("/manager/logout", LoginCtrl.apiLogout);
 
-// ()
-router.get("/manager/userinfo", UserCtrl.apiGetUserInfo);
-
 //----------------------------------staff----------------------------------
 
 router.get("/staff", function (_req, res) {
@@ -120,27 +114,20 @@ router.delete("/staff/deleteOrder", OrderCtrl.apiDeleteOrder);
 // ()
 router.get("/staff/logout", LoginCtrl.apiLogout);
 
-// ()
-router.get("/staff/userinfo", UserCtrl.apiGetUserInfo);
-
 //----------------------------------owner----------------------------------
 
 router.get("/owner", function (_req, res) {
     res.sendFile(Path.join(__dirname, "../frontend/owner.html"));
 });
 
-// (filter: "month", year: integer, month: integer) => monthly visiting
-// (filter: "week", year: integer, month: integer, from: integer, to: integer) => weekly visiting
-// (filter: "day", year: integer, month: integer, day: integer) => daily visiting
+// (filter: "month", year, month) => monthly visiting
+// (filter: "week", year, month, from, to) => weekly visiting
+// (filter: "day", year, month, day) => daily visiting
 router.post("/owner/visiting", StatisticsCtrl.apiGetVisiting);
-
 router.post("/owner/totalAmount", StatisticsCtrl.apiGetTotalAmount);
-
 router.post("/owner/preference", StatisticsCtrl.apiGetPreference);
 
 router.get("/owner/logout", LoginCtrl.apiLogout);
-
-router.get("/owner/userinfo", UserCtrl.apiGetUserInfo);
 
 //----------------------------------customer----------------------------------
 
@@ -165,5 +152,8 @@ router.put("/customer/payOrder", OrderCtrl.apiPayOrder);
 
 // (tableNumber)
 router.delete("/customer/cancelOrder", OrderCtrl.apiDeleteOrder);
+
+// ()
+router.get("/customer/logout", LoginCtrl.apiLogout);
 
 export default router;
