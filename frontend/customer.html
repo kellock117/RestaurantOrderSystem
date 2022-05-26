@@ -1,12 +1,445 @@
 <!DOCTYPE html>
+<!-- saved from url=(0071)file:///C:/Users/docto/Downloads/Telegram%20Desktop/customer%20(2).html -->
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    <h1>Customer</h1>
-</body>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Customer</title>
+        <style>
+            body {
+                margin: 0;
+                font-family: Arial, Helvetica, sans-serif;
+            }
+
+            table {
+                width: 100%;
+                border: 1px solid #444444;
+                border-collapse: collapse;
+            }
+
+            th,
+            td {
+                border: 1px solid #444444;
+            }
+
+            .topnav {
+                overflow: hidden;
+                background-color: #333;
+            }
+
+            .topnav a {
+                float: left;
+                color: #f2f2f2;
+                text-align: center;
+                padding: 14px 16px;
+                text-decoration: none;
+                font-size: 17px;
+            }
+
+            .topnav a:hover {
+                background-color: #ddd;
+                color: black;
+            }
+
+            .topnav a.active {
+                background-color: #04aa6d;
+                color: white;
+            }
+        </style>
+    </head>
+
+    <body>
+        <h1>Customer Main</h1>
+        <div class="topnav">
+            <a id="searchmenu" class="active">Search Menu</a>
+            <a id="viewmenu">View Menu</a>
+            <a id="vieworder">View Order</a>
+            <a id="payorder">Payment</a>
+        </div>
+        <div>
+            <div id="pg0">
+                <div class="filter">
+                    <input
+                        type="text"
+                        id="search value"
+                        placeholder="Enter Menu Item Name to Search for"
+                        style="width: 200px"
+                    />
+                    <button onclick="SearchMenu()">Search</button>
+                </div>
+                <table id="search MenuList">
+                    <tbody>
+                        <tr>
+                            <th>NAME</th>
+                            <th>PRICE</th>
+                            <th>IMAGE</th>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- view Menu Item-->
+            <div id="pg1" style="display: none">
+                <table id="view MenuList">
+                    <tbody>
+                        <tr>
+                            <th>NAME</th>
+                            <th>PRICE</th>
+                            <th>IMAGE</th>
+                            <th>QUANTITY</th>
+                        </tr>
+                    </tbody>
+                </table>
+                <button onclick="Order()">Order</button>
+            </div>
+
+            <div id="pg2" style="display: none">
+                <div class="filter">
+                    <input
+                        type="text"
+                        id="search order"
+                        placeholder="Enter Table Number to Search for Order"
+                        style="width: 200px"
+                    />
+                    <button onclick="SearchOrder()">View Order</button>
+                </div>
+                <table id="search OrderList">
+                    <tbody>
+                        <tr>
+                            <th>TABLE NUMBER</th>
+                            <th>ORDER</th>
+                            <th>TOTAL AMOUNT</th>
+                            <th>DATE</th>
+                            <th>CONFIRMATION</th>
+                            <th>PAYMENT</th>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div id="pg3" style="display: none">
+                <label
+                    >Table Number:<input
+                        type="text"
+                        id="paymenttablenum"
+                        placeholder="Enter Table Number:"
+                /></label>
+                <label
+                    >Promo Code :<input
+                        type="text"
+                        id="paymentpromo"
+                        placeholder="Enter Promo Code:"
+                /></label>
+                <button onclick="Payment()">Pay now</button>
+            </div>
+        </div>
+        <script>
+            let info = null;
+            let viewLength = 0;
+            let searchLength = 0;
+            let searchLength2 = 0;
+
+            function ChangeEffect(func) {
+                const navInfo = [
+                    "searchmenu",
+                    "viewmenu",
+                    "vieworder",
+                    "payorder",
+                ];
+                document.getElementById(func).className = "active";
+
+                for (const e in navInfo) {
+                    if (navInfo[e] == func) {
+                        document.getElementById(`pg${e}`).style.display =
+                            "block";
+                        continue;
+                    }
+                    document.getElementById(navInfo[e]).className = " ";
+                    document.getElementById(`pg${e}`).style.display = "none";
+                }
+            }
+
+            document
+                .getElementById("viewmenu")
+                .addEventListener("click", function () {
+                    const table = document.getElementById("view MenuList");
+                    for (let i = 0; i < viewLength; i++) {
+                        table.deleteRow(-1);
+                    }
+                    ChangeEffect("viewmenu");
+
+                    fetch("http://localhost:5000/customer/viewMenu", {
+                        method: "GET",
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            info = data;
+                            ViewMenu();
+                        });
+                });
+
+            document
+                .getElementById("searchmenu")
+                .addEventListener("click", function () {
+                    ChangeEffect("searchmenu");
+                });
+
+            document
+                .getElementById("vieworder")
+                .addEventListener("click", function () {
+                    ChangeEffect("vieworder");
+                });
+
+            document
+                .getElementById("payorder")
+                .addEventListener("click", function () {
+                    ChangeEffect("payorder");
+                });
+
+            function ViewMenu() {
+                const table = document.getElementById("view MenuList");
+                CreateMenuTable(table, info);
+                viewLength = info.length;
+            }
+
+            function CreateMenuTable(table, data) {
+                for (const element of data) {
+                    const row = table.insertRow();
+
+                    const nameCell = row.insertCell();
+                    nameCell.className = "menu name";
+                    nameCell.innerText = element.name;
+
+                    const priceCell = row.insertCell();
+                    priceCell.innerText = element.price;
+
+                    const imageCell = row.insertCell();
+
+                    let img = "";
+                    for (const name of element.image) {
+                        console.log(name);
+                        img += `<img src="../backend/images/${name}">`;
+                    }
+                    imageCell.innerHTML = img;
+
+                    const quantityCell = row.insertCell();
+                    quantityCell.className = "menu quantity";
+                    quantityCell.innerHTML = `<input type="text" placeholder="Enter Quantity"/>`;
+                }
+            }
+
+            function CreateTable2(table, data) {
+                for (const element of data) {
+                    const row = table.insertRow();
+
+                    const tableNumCell = row.insertCell();
+                    tableNumCell.innerText = element.tableNumber;
+
+                    const orderCell = row.insertCell();
+                    for (var x = 0; x < element.menus.length; x++) {
+                        orderCell.innerText += element.menus[x];
+                    }
+
+                    const totalamountCell = row.insertCell();
+                    totalamountCell.innerText = element.totalAmount;
+
+                    const dateCell = row.insertCell();
+                    dateCell.innerText = element.date;
+
+                    const confirmationCell = row.insertCell();
+                    confirmationCell.innerText = element.confirmed;
+
+                    const paymentCell = row.insertCell();
+                    paymentCell.innerText = element.paid;
+                }
+            }
+
+            function SearchMenu() {
+                const table = document.getElementById("search MenuList");
+                for (let i = 0; i < searchLength; i++) {
+                    table.deleteRow(-1);
+                }
+
+                const infoList = ["name", "price", "image"];
+                const name = document.getElementById("search value").value;
+
+                if (name == "") {
+                    window.alert("Please fill in the blank");
+                    return;
+                }
+
+                fetch("http://localhost:5000/customer/searchMenu", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        name: name,
+                    }),
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        CreateTable(table, data);
+
+                        searchLength = data.length;
+                    });
+            }
+
+            function CancelOrder() {
+                const tableNumber = document.getElementById("cOrder").value;
+                if (tableNumber == "") {
+                    window.alert("Please fill in the blanks");
+                    return;
+                }
+                fetch("http://localhost:5000/customer/cancelOrder", {
+                    method: "DELETE",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        tableNumber: tableNumber,
+                    }),
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.status === "success") {
+                            window.alert("Promo code deleted successfully");
+                        } else {
+                            window.alert("Promo code does not exist");
+                        }
+                    });
+            }
+
+            function CreateOrder(func) {
+                const tableNumber = location.search.split("=")[1];
+                const table = document.getElementById(func + " MenuList");
+                let menus = [];
+                let count = 0;
+
+                for (
+                    let i = 0;
+                    i < func == "view" ? viewLength : searchLength;
+                    i++
+                ) {
+                    const name = table.getElementsByClassName("menu name")[i];
+                    const quantity =
+                        table.getElementsByClassName("menu quantity")[i];
+
+                    if (quantity == "") {
+                        count++;
+                        continue;
+                    }
+
+                    if (!Number.isInteger(quantity)) {
+                        window.alert("quantity has to be number");
+                        return;
+                    }
+
+                    const menusobj = {
+                        name: name,
+                        quantity: quantity,
+                    };
+                    menus.push(menusobj);
+                }
+
+                if (count == (func == "view" ? viewLength : searchLength)) {
+                    window.alert("No item added");
+                    return;
+                }
+
+                fetch("http://localhost:5000/customer/createOrder", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        tableNumber: tableNumber,
+                        menus: menus,
+                    }),
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.status === "success") {
+                            window.alert("Order received");
+                        } else {
+                            window.alert("Order not received please try again");
+                        }
+                    });
+            }
+
+            function SearchOrder() {
+                const table = document.getElementById("search OrderList");
+                for (let i = 0; i < searchLength2; i++) {
+                    table.deleteRow(-1);
+                }
+
+                const infoList = [
+                    "tableNumber",
+                    "menus",
+                    "totalAmount",
+                    "confirmed",
+                    "paid",
+                ];
+                const tableNumber =
+                    document.getElementById("search order").value;
+
+                if (tableNumber == "") {
+                    window.alert("Please fill in the blank");
+                    return;
+                }
+
+                fetch("http://localhost:5000/customer/viewOrder", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        tableNumber: tableNumber,
+                    }),
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        CreateTable2(table, data);
+
+                        searchLength2 = data.length;
+                    });
+            }
+
+            function Payment() {
+                const tableNumber =
+                    document.getElementById("paymenttablenum").value;
+                const code = document.getElementById("paymentpromo").value;
+
+                if (tableNumber == "") {
+                    window.alert("Please fill in the blanks");
+                    return;
+                }
+
+                fetch("http://localhost:5000/customer/payOrder", {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        tableNumber: tableNumber,
+                        code: code,
+                    }),
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.status === "success") {
+                            window.alert("Order received");
+                        } else if (data.status === "nothing to pay") {
+                            window.alert("No payment required");
+                        } else if (data.status === "Promotion code expired") {
+                            window.alert("Promo code has expired");
+                        } else {
+                            window.alert("Payment Error please try again");
+                        }
+                    });
+            }
+        </script>
+    </body>
 </html>
