@@ -61,7 +61,8 @@ export default class StatisticsController {
                 result = orders[0].totalAmount;
             } else if (orders.length > 1) {
                 result = orders.reduce(
-                    (prev, curr) => ((prev += curr.totalAmount), 0)
+                    (prev, curr) => (prev += curr.totalAmount),
+                    0
                 );
             }
 
