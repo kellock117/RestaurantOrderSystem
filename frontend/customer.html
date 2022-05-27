@@ -149,7 +149,10 @@
                     })
                         .then(response => response.json())
                         .then(data => {
-                            CreateMenuTable(table, data);
+                            window.setTimeout(function () {
+                                CreateMenuTable(table, data);
+                            }, 300);
+
                             viewLength = data.length;
                         });
                 });
