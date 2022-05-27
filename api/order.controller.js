@@ -14,7 +14,7 @@ export default class OrderController {
             for (const menu of menus) {
                 const name = menu.name;
                 const menuInfo = await MenusDAO.getMenu(name);
-                const quantity = menu.quantity;
+                const quantity = Number(menu.quantity);
                 const price = menuInfo.price;
                 const totalPrice = price * quantity;
 
@@ -136,8 +136,8 @@ export default class OrderController {
                 menus = menus.reduce((curr, ele) => {
                     let exist = curr.filter(cur => cur.name == ele.name);
                     if (exist.length) {
-                        exist[0].quantity += ele.quantity;
-                        exist[0].amount += ele.amount;
+                        exist[0].quantity += Number(ele.quantity);
+                        exist[0].totalPrice += Number(ele.totalPrice);
                     } else {
                         curr.push(ele);
                     }

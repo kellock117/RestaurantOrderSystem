@@ -59,7 +59,7 @@
             <div id = "pg0" style="display: none">
                 <table id="view orderList">
                     <tr>
-                        <th>Table Number</th><th>Menus</th><th>Total Amount</th><th>Confirm Order</th><th>Reject Order</th>
+                        <th>Table Number</th><th>Menus</th><th>Total Amount</th><th>Confirm Order</th><th>Reject Order</th><th>Date</th>
                     </tr>
                 </table>
             </div>
@@ -68,7 +68,7 @@
             <div id = "pg1" style="display: none">
                 <table id="view all orderList">
                     <tr>
-                        <th>Table Number</th><th>Menus</th><th>Total Amount</th><th>Confirm Order</th><th>Reject Order</th>
+                        <th>Table Number</th><th>Menus</th><th>Total Amount</th><th>Confirm Order</th><th>Reject Order</th><th>Date</th>
                     </tr>
                 </table>
             </div>
@@ -189,6 +189,9 @@
                     confirmCell.innerHTML = `<button onClick="ConfirmOrder('${element._id}')">Confirm</button>`
                     deleteCell.innerHTML = `<button onClick="DeleteOrder('${element._id}')">Delete</button>`
                 }
+
+                const dateCell = row.insertCell()
+                dateCell.innerText = new Date(element.date).toLocaleString()
             }
         }
 
