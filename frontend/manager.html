@@ -176,7 +176,7 @@
             }
             ChangeEffect("viewmenu")
 
-            fetch("restaurantordersystem-env.eba-b26km6pe.us-west-2.elasticbeanstalk.com/manager/viewMenu", {
+            fetch("/manager/viewMenu", {
             method: "GET",
             })
             .then((response) => response.json())
@@ -209,7 +209,7 @@
             }
             ChangeEffect("viewpromo")
 
-            fetch("restaurantordersystem-env.eba-b26km6pe.us-west-2.elasticbeanstalk.com/manager/viewPromotion", {
+            fetch("/manager/viewPromotion", {
             method: "GET",
             })
             .then((response) => response.json())
@@ -229,10 +229,10 @@
         } )
 
         document.getElementById("logout").addEventListener("click", function() {
-            fetch("htt[://localhost:5000/manager/logout", {
+            fetch("/manager/logout", {
                 method: "get"
             })
-            location.replace("restaurantordersystem-env.eba-b26km6pe.us-west-2.elasticbeanstalk.com/")
+            location.href = "/";
         } )
 
 
@@ -254,7 +254,7 @@
                 return
             }
 
-            fetch("restaurantordersystem-env.eba-b26km6pe.us-west-2.elasticbeanstalk.com/manager/createMenu", {
+            fetch("/manager/createMenu", {
                 method: "POST",
                 body: data1
             }).then((response) => response.json())
@@ -322,7 +322,7 @@
                 return
             }
 
-            fetch("restaurantordersystem-env.eba-b26km6pe.us-west-2.elasticbeanstalk.com/manager/searchMenu", {
+            fetch("/manager/searchMenu", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -365,7 +365,7 @@
                 if (price != "") data.append("price", price)
                 if (rename != '') data.append("rename", rename)
 
-                fetch("restaurantordersystem-env.eba-b26km6pe.us-west-2.elasticbeanstalk.com/manager/updateMenu", {
+                fetch("/manager/updateMenu", {
                 method: "PUT",
                 body: data
                 })
@@ -389,7 +389,7 @@
                 if (price != "") data.append("price", price)
                 if (rename != '') data.append("rename", rename)
 
-                fetch("restaurantordersystem-env.eba-b26km6pe.us-west-2.elasticbeanstalk.com/manager/updateMenu", {
+                fetch("/manager/updateMenu", {
                 method: "PUT",
                 body: data
                 })
@@ -411,7 +411,7 @@
         function DeleteMenu() {
             const name = document.getElementById("dMenu").value
 
-            fetch("restaurantordersystem-env.eba-b26km6pe.us-west-2.elasticbeanstalk.com/manager/deleteMenu", {
+            fetch("/manager/deleteMenu", {
                 method: "DELETE",
                 headers: {
                     "Content-Type": "application/json"
@@ -439,7 +439,7 @@
                 return
             }
 
-            fetch("restaurantordersystem-env.eba-b26km6pe.us-west-2.elasticbeanstalk.com/manager/createPromotion", {
+            fetch("/manager/createPromotion", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -482,7 +482,7 @@
                 window.alert("Please fill in the blanks")
                 return
             }
-            fetch("restaurantordersystem-env.eba-b26km6pe.us-west-2.elasticbeanstalk.com/manager/deletePromotion", {
+            fetch("/manager/deletePromotion", {
                 method: "DELETE",
                 headers: {
                     "Content-Type": "application/json"
@@ -519,7 +519,7 @@
             if (discount != '') body["discountRate"] = discount
             if (date != '') body["expiryDate"] = date
 
-            fetch("restaurantordersystem-env.eba-b26km6pe.us-west-2.elasticbeanstalk.com/manager/updatePromotion", {
+            fetch("/manager/updatePromotion", {
                 method: "PUT",
                 headers: {
                 "Content-Type": "application/json"
