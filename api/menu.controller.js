@@ -66,6 +66,10 @@ export default class MenuController {
         try {
             let menus = await MenusDAO.getAllMenus();
 
+            for (const menu of menus) {
+                await ImagesDAO.downloadImages(menu);
+            }
+
             //return menus list
             res.json(menus);
         } catch (err) {

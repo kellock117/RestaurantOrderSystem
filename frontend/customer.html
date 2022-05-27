@@ -200,11 +200,11 @@
 
                     const imageCell = row.insertCell();
 
-                    // let img = "";
-                    // for (const name of element.image) {
-                    //     img += `<img src="../backend/images/${name}">`;
-                    // }
-                    // imageCell.innerHTML = img;
+                    let img = "";
+                    for (const name of element.image) {
+                        img += `<img src="${name}" style="width: 25vw; height: 25vh;">`;
+                    }
+                    imageCell.innerHTML = img;
 
                     const quantityCell = row.insertCell();
                     quantityCell.innerHTML = `<input type="text" class="menu quantity" placeholder="Enter Quantity"/>`;
@@ -279,8 +279,8 @@
                         if (data.status === "success") {
                             window.alert("Deleted");
                             location.reload();
-                        } else {
-                            window.alert("fail to delete");
+                        } else if (data.status === "confirmed already") {
+                            window.alert("confirmed already");
                         }
                     });
             }
