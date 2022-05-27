@@ -99,7 +99,6 @@
                 <table id="view OrderList">
                     <tbody>
                         <tr>
-                            <th>TABLE NUMBER</th>
                             <th>ORDER</th>
                             <th>TOTAL AMOUNT</th>
                             <th>CANCEL ORDER</th>
@@ -216,9 +215,6 @@
                 for (const element of data) {
                     const row = table.insertRow();
 
-                    const tableNumberCell = row.insertCell();
-                    tableNumberCell.innerText = element.tableNumber;
-
                     const menusCell = row.insertCell();
                     let value = "";
                     for (const menu of element.menus) {
@@ -234,7 +230,7 @@
                     if (element.confirmed) {
                         deleteCell.innerText = "confirmed";
                     } else {
-                        deleteCell.innerHTML = `<button onClick="DeleteOrder('${element._id}')">Delete</button>`;
+                        deleteCell.innerHTML = `<button onClick="DeleteOrder('${element._id}')">Cancel</button>`;
                     }
                 }
             }
