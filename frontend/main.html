@@ -36,7 +36,7 @@
     </div>
     <script>
         function logInStatus() {
-            fetch("restaurantordersystem-env.eba-b26km6pe.us-west-2.elasticbeanstalk.com", {
+            fetch("/", {
                 method: "post",
                 headers: {
                     "Content-Type": "application/json"
@@ -48,7 +48,7 @@
             }).then((response) => response.json())
             .then((data) => {
                 if (data.status === 'success') {
-                    location.href = "restaurantordersystem-env.eba-b26km6pe.us-west-2.elasticbeanstalk.com/" + data.role
+                    location.href = "/" + data.role
                 }
                 else if (data.status === 'incorrect password') {
                     window.alert("Password is incorrect. Please try again")

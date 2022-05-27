@@ -122,7 +122,7 @@
             RefreshTable("view")
             ChangeEffect("vieworder")
 
-            fetch("restaurantordersystem-env.eba-b26km6pe.us-west-2.elasticbeanstalk.com/staff/viewOrder", {
+            fetch("/staff/viewOrder", {
             method: "GET",
             })
             .then((response) => response.json())
@@ -136,7 +136,7 @@
             RefreshTable("view all")
             ChangeEffect("viewallorder")
 
-            fetch("restaurantordersystem-env.eba-b26km6pe.us-west-2.elasticbeanstalk.com/staff/viewAllOrder", {
+            fetch("/staff/viewAllOrder", {
             method: "GET",
             })
             .then((response) => response.json())
@@ -151,10 +151,10 @@
         } )
 
         document.getElementById("logout").addEventListener("click", function() {
-            fetch("htt[://localhost:5000/staff/logout", {
+            fetch("/staff/logout", {
                 method: "get"
             })
-            location.replace("restaurantordersystem-env.eba-b26km6pe.us-west-2.elasticbeanstalk.com/")
+            location.href = "/";
         } )
 
         function CreateTable(table, data) {
@@ -203,7 +203,7 @@
         }
 
         function ConfirmOrder(id) {
-            fetch("restaurantordersystem-env.eba-b26km6pe.us-west-2.elasticbeanstalk.com/staff/confirmOrder", {
+            fetch("/staff/confirmOrder", {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json"
@@ -225,7 +225,7 @@
         }
 
         function DeleteOrder(id) {
-            fetch("restaurantordersystem-env.eba-b26km6pe.us-west-2.elasticbeanstalk.com/staff/deleteOrder", {
+            fetch("/staff/deleteOrder", {
                 method: "DELETE",
                 headers: {
                     "Content-Type": "application/json"
@@ -256,7 +256,7 @@
                 return
             }
 
-            fetch("restaurantordersystem-env.eba-b26km6pe.us-west-2.elasticbeanstalk.com/staff/searchOrder", {
+            fetch("/staff/searchOrder", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"

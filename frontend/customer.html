@@ -145,12 +145,9 @@
                     }
                     ChangeEffect("viewmenu");
 
-                    fetch(
-                        "restaurantordersystem-env.eba-b26km6pe.us-west-2.elasticbeanstalk.com/customer/viewMenu",
-                        {
-                            method: "GET",
-                        }
-                    )
+                    fetch("/customer/viewMenu", {
+                        method: "GET",
+                    })
                         .then(response => response.json())
                         .then(data => {
                             CreateMenuTable(table, data);
@@ -175,18 +172,15 @@
 
                     const tableNumber = location.search.split("=")[1];
 
-                    fetch(
-                        "restaurantordersystem-env.eba-b26km6pe.us-west-2.elasticbeanstalk.com/staff/searchOrder",
-                        {
-                            method: "POST",
-                            headers: {
-                                "Content-Type": "application/json",
-                            },
-                            body: JSON.stringify({
-                                tableNumber: tableNumber,
-                            }),
-                        }
-                    )
+                    fetch("/staff/searchOrder", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({
+                            tableNumber: tableNumber,
+                        }),
+                    })
                         .then(response => response.json())
                         .then(data => {
                             CreateOrderTable(table, data);
@@ -258,18 +252,15 @@
                     return;
                 }
 
-                fetch(
-                    "restaurantordersystem-env.eba-b26km6pe.us-west-2.elasticbeanstalk.com/customer/searchMenu",
-                    {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json",
-                        },
-                        body: JSON.stringify({
-                            name: name,
-                        }),
-                    }
-                )
+                fetch("/customer/searchMenu", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        name: name,
+                    }),
+                })
                     .then(response => response.json())
                     .then(data => {
                         CreateMenuTable(table, data);
@@ -278,18 +269,15 @@
             }
 
             function DeleteOrder(id) {
-                fetch(
-                    "restaurantordersystem-env.eba-b26km6pe.us-west-2.elasticbeanstalk.com/customer/cancelOrder",
-                    {
-                        method: "DELETE",
-                        headers: {
-                            "Content-Type": "application/json",
-                        },
-                        body: JSON.stringify({
-                            _id: id,
-                        }),
-                    }
-                )
+                fetch("/customer/cancelOrder", {
+                    method: "DELETE",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        _id: id,
+                    }),
+                })
                     .then(response => response.json())
                     .then(data => {
                         if (data.status === "success") {
@@ -336,19 +324,16 @@
                     return;
                 }
 
-                fetch(
-                    "restaurantordersystem-env.eba-b26km6pe.us-west-2.elasticbeanstalk.com/customer/createOrder",
-                    {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json",
-                        },
-                        body: JSON.stringify({
-                            tableNumber: tableNumber,
-                            menus: menus,
-                        }),
-                    }
-                )
+                fetch("/customer/createOrder", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        tableNumber: tableNumber,
+                        menus: menus,
+                    }),
+                })
                     .then(response => response.json())
                     .then(data => {
                         if (data.status === "success") {
@@ -366,16 +351,13 @@
 
                 if (code != "") body["code"] = code;
 
-                fetch(
-                    "restaurantordersystem-env.eba-b26km6pe.us-west-2.elasticbeanstalk.com/customer/payOrder",
-                    {
-                        method: "PUT",
-                        headers: {
-                            "Content-Type": "application/json",
-                        },
-                        body: JSON.stringify(body),
-                    }
-                )
+                fetch("/customer/payOrder", {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(body),
+                })
                     .then(response => response.json())
                     .then(data => {
                         if (data.status === "success") {

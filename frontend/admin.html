@@ -257,12 +257,9 @@
                     }
                     ChangeEffect("viewuser");
 
-                    fetch(
-                        "restaurantordersystem-env.eba-b26km6pe.us-west-2.elasticbeanstalk.com/admin/view",
-                        {
-                            method: "GET",
-                        }
-                    )
+                    fetch("/admin/view", {
+                        method: "GET",
+                    })
                         .then(response => response.json())
                         .then(data => {
                             info = data;
@@ -291,12 +288,10 @@
             document
                 .getElementById("logout")
                 .addEventListener("click", function () {
-                    fetch("htt[://localhost:5000/admin/logout", {
+                    fetch("/admin/logout", {
                         method: "get",
                     });
-                    location.replace(
-                        "restaurantordersystem-env.eba-b26km6pe.us-west-2.elasticbeanstalk.com/"
-                    );
+                    location.href = "/";
                 });
 
             function CreateUser() {
@@ -309,23 +304,20 @@
                     return;
                 }
 
-                fetch(
-                    "restaurantordersystem-env.eba-b26km6pe.us-west-2.elasticbeanstalk.com/admin/create",
-                    {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json",
-                        },
-                        body: JSON.stringify({
-                            id: document.getElementById("idNo").value,
-                            password: password,
-                            userName: userName,
-                            role: document.querySelector(
-                                'input[name="role"]:checked'
-                            ).value,
-                        }),
-                    }
-                )
+                fetch("/admin/create", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        id: document.getElementById("idNo").value,
+                        password: password,
+                        userName: userName,
+                        role: document.querySelector(
+                            'input[name="role"]:checked'
+                        ).value,
+                    }),
+                })
                     .then(response => response.json())
                     .then(data => {
                         if (data.status === "success") {
@@ -376,19 +368,16 @@
                     return;
                 }
 
-                fetch(
-                    "restaurantordersystem-env.eba-b26km6pe.us-west-2.elasticbeanstalk.com/admin/search",
-                    {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json",
-                        },
-                        body: JSON.stringify({
-                            filter: filter,
-                            value: value,
-                        }),
-                    }
-                )
+                fetch("/admin/search", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        filter: filter,
+                        value: value,
+                    }),
+                })
                     .then(response => response.json())
                     .then(data => {
                         for (const element of data) {
@@ -413,19 +402,16 @@
                     return;
                 }
 
-                fetch(
-                    "restaurantordersystem-env.eba-b26km6pe.us-west-2.elasticbeanstalk.com/admin/update",
-                    {
-                        method: "PUT",
-                        headers: {
-                            "Content-Type": "application/json",
-                        },
-                        body: JSON.stringify({
-                            id: id,
-                            password: password,
-                        }),
-                    }
-                )
+                fetch("/admin/update", {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        id: id,
+                        password: password,
+                    }),
+                })
                     .then(response => response.json())
                     .then(data => {
                         if (data.status === "success") {
@@ -443,20 +429,17 @@
                     'input[name="uprole"]:checked'
                 ).value;
 
-                fetch(
-                    "restaurantordersystem-env.eba-b26km6pe.us-west-2.elasticbeanstalk.com/admin/update",
-                    {
-                        method: "PUT",
-                        headers: {
-                            "Content-Type": "application/json",
-                        },
-                        body: JSON.stringify({
-                            id: id,
-                            userName: userName,
-                            role: role,
-                        }),
-                    }
-                )
+                fetch("/admin/update", {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        id: id,
+                        userName: userName,
+                        role: role,
+                    }),
+                })
                     .then(response => response.json())
                     .then(data => {
                         if (data.status === "success") {
@@ -472,18 +455,15 @@
             function DeleteUser() {
                 const id = document.getElementById("did").value;
 
-                fetch(
-                    "restaurantordersystem-env.eba-b26km6pe.us-west-2.elasticbeanstalk.com/admin/delete",
-                    {
-                        method: "DELETE",
-                        headers: {
-                            "Content-Type": "application/json",
-                        },
-                        body: JSON.stringify({
-                            id: id,
-                        }),
-                    }
-                )
+                fetch("/admin/delete", {
+                    method: "DELETE",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        id: id,
+                    }),
+                })
                     .then(response => response.json())
                     .then(data => {
                         if (data.status === "success") {
