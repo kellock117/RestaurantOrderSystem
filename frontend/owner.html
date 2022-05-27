@@ -173,7 +173,9 @@
                     fetch("htt[://localhost:5000/staff/logout", {
                         method: "get",
                     });
-                    location.replace("http://localhost:5000/");
+                    location.replace(
+                        "restaurantordersystem-env.eba-b26km6pe.us-west-2.elasticbeanstalk.com/"
+                    );
                 });
 
             document
@@ -199,13 +201,16 @@
                     body["day"] = document.getElementById("day").value;
                 }
 
-                fetch(`http://localhost:5000/owner/${func}`, {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify(body),
-                })
+                fetch(
+                    `restaurantordersystem-env.eba-b26km6pe.us-west-2.elasticbeanstalk.com/owner/${func}`,
+                    {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify(body),
+                    }
+                )
                     .then(response => response.json())
                     .then(data => {
                         const div = document.getElementById(func[0] + "value");

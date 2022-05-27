@@ -176,7 +176,7 @@
             }
             ChangeEffect("viewmenu")
 
-            fetch("http://localhost:5000/manager/viewMenu", {
+            fetch("restaurantordersystem-env.eba-b26km6pe.us-west-2.elasticbeanstalk.com/manager/viewMenu", {
             method: "GET",
             })
             .then((response) => response.json())
@@ -209,7 +209,7 @@
             }
             ChangeEffect("viewpromo")
 
-            fetch("http://localhost:5000/manager/viewPromotion", {
+            fetch("restaurantordersystem-env.eba-b26km6pe.us-west-2.elasticbeanstalk.com/manager/viewPromotion", {
             method: "GET",
             })
             .then((response) => response.json())
@@ -232,7 +232,7 @@
             fetch("htt[://localhost:5000/manager/logout", {
                 method: "get"
             })
-            location.replace("http://localhost:5000/")
+            location.replace("restaurantordersystem-env.eba-b26km6pe.us-west-2.elasticbeanstalk.com/")
         } )
 
 
@@ -254,7 +254,7 @@
                 return
             }
 
-            fetch("http://localhost:5000/manager/createMenu", {
+            fetch("restaurantordersystem-env.eba-b26km6pe.us-west-2.elasticbeanstalk.com/manager/createMenu", {
                 method: "POST",
                 body: data1
             }).then((response) => response.json())
@@ -322,7 +322,7 @@
                 return
             }
 
-            fetch("http://localhost:5000/manager/searchMenu", {
+            fetch("restaurantordersystem-env.eba-b26km6pe.us-west-2.elasticbeanstalk.com/manager/searchMenu", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -365,7 +365,7 @@
                 if (price != "") data.append("price", price)
                 if (rename != '') data.append("rename", rename)
 
-                fetch("http://localhost:5000/manager/updateMenu", {
+                fetch("restaurantordersystem-env.eba-b26km6pe.us-west-2.elasticbeanstalk.com/manager/updateMenu", {
                 method: "PUT",
                 body: data
                 })
@@ -389,7 +389,7 @@
                 if (price != "") data.append("price", price)
                 if (rename != '') data.append("rename", rename)
 
-                fetch("http://localhost:5000/manager/updateMenu", {
+                fetch("restaurantordersystem-env.eba-b26km6pe.us-west-2.elasticbeanstalk.com/manager/updateMenu", {
                 method: "PUT",
                 body: data
                 })
@@ -411,7 +411,7 @@
         function DeleteMenu() {
             const name = document.getElementById("dMenu").value
 
-            fetch("http://localhost:5000/manager/deleteMenu", {
+            fetch("restaurantordersystem-env.eba-b26km6pe.us-west-2.elasticbeanstalk.com/manager/deleteMenu", {
                 method: "DELETE",
                 headers: {
                     "Content-Type": "application/json"
@@ -439,7 +439,7 @@
                 return
             }
 
-            fetch("http://localhost:5000/manager/createPromotion", {
+            fetch("restaurantordersystem-env.eba-b26km6pe.us-west-2.elasticbeanstalk.com/manager/createPromotion", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -482,7 +482,7 @@
                 window.alert("Please fill in the blanks")
                 return
             }
-            fetch("http://localhost:5000/manager/deletePromotion", {
+            fetch("restaurantordersystem-env.eba-b26km6pe.us-west-2.elasticbeanstalk.com/manager/deletePromotion", {
                 method: "DELETE",
                 headers: {
                     "Content-Type": "application/json"
@@ -519,7 +519,7 @@
             if (discount != '') body["discountRate"] = discount
             if (date != '') body["expiryDate"] = date
 
-            fetch("http://localhost:5000/manager/updatePromotion", {
+            fetch("restaurantordersystem-env.eba-b26km6pe.us-west-2.elasticbeanstalk.com/manager/updatePromotion", {
                 method: "PUT",
                 headers: {
                 "Content-Type": "application/json"
