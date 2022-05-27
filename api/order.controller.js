@@ -94,7 +94,12 @@ export default class OrderController {
         try {
             const id = req.body._id;
 
-            await OrdersDAO.deleteOrder(id);
+            const status = await OrdersDAO.deleteOrder(id);
+            console.log(status);
+
+            if (status.deletedCount == 0) {
+                res.json({ status: "confirmed already" });
+            }
 
             res.json({ status: "success" });
         } catch (err) {

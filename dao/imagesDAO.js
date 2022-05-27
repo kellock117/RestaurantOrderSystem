@@ -31,18 +31,16 @@ export default class ImagesDAO {
             let fileInfos = await this.files
                 .find({ filename: { $in: names } })
                 .toArray();
-            let url = [];
 
             const bucket = new GridFSBucket(this.database, {
                 bucketName: "images",
             });
 
             for (let i = 0; i < names.length; i++) {
-                url.push(bucket.openDownloadStream(fileInfos[i]._id).pipe(res));
-                // pipe(fs.createWriteStream('./images/' + names[i]))
+                bucket
+                    .openDownloadStream(fileInfos[i]._id)
+                    .pipe(fs.createWriteStream("./images/" + names[i]));
             }
-            console.log(url);
-            return url;
         } catch (err) {
             console.log(`Unable to download files: ${err.message}`);
         }

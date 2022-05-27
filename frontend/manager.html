@@ -288,11 +288,11 @@
 
                 const imageCell = row.insertCell()
 
-                let img = ""
+                let img = "";
                 for (const name of element.image) {
-                    console.log(name)
-                    img += `<img src="../backend/images/${name}">`
+                    img += `<img src="${name}" style="width: 25vw; height: 25vh;">`;
                 }
+                imageCell.innerHTML = img;
 
                 imageCell.innerHTML = img
             }
