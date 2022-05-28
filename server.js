@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import Path from "path";
 import BodyParser from "body-parser";
+import compression from "compression";
 
 import MainRouter from "./api/main.route.js";
 
@@ -15,7 +16,11 @@ global.User = new UserForm();
 app.use(BodyParser.urlencoded({ extended: true }));
 app.use(cors());
 app.use(BodyParser.json());
-app.use(["/customer", "/manager"], express.static("images"));
+app.use(
+    ["/customer", "/manager"],
+    express.static("images", { maxAge: 3600000 })
+);
+app.use(compression({ filter: shouldCompress }));
 
 // app.use(((req, res, next) => {
 //     //when it is not logged in and url is main or admin page then redirect to main page
