@@ -22,20 +22,22 @@ app.use(
 );
 app.use(compression());
 
-// app.use(((req, res, next) => {
-//     //when it is not logged in and url is main or admin page then redirect to main page
-//     if (!User.loggedIn && req.url != "/" && req.url != "/customer") {
-//         res.redirect(process.env.MAIN_PAGE)
-//     }
-//     //when it is logged in and
-//     else if (User.loggedIn && !req.url.includes(`/${User.role}`) && req.url != "/") {
-//         res.redirect(process.env.MAIN_PAGE)
-//     }
-//     else {
-//         next()
-//         console.log(User)
-//     }
-// }))
+app.use((req, res, next) => {
+    //when it is not logged in and url is main or admin page then redirect to main page
+    if (!User.loggedIn && req.url != "/" && req.url != "/customer") {
+        res.redirect(process.env.MAIN_PAGE);
+    }
+    //when it is logged in and
+    else if (
+        User.loggedIn &&
+        !req.url.includes(`/${User.role}`) &&
+        req.url != "/"
+    ) {
+        res.redirect(process.env.MAIN_PAGE);
+    } else {
+        next();
+    }
+});
 
 //use MainRouter for main page and suburl
 app.use("/", MainRouter);
