@@ -20,7 +20,7 @@ app.use(
     ["/customer", "/manager"],
     express.static("images", { maxAge: 3600000 })
 );
-app.use(compression({ filter: shouldCompress }));
+app.use(compression());
 
 // app.use(((req, res, next) => {
 //     //when it is not logged in and url is main or admin page then redirect to main page
