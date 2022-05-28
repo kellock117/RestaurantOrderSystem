@@ -182,7 +182,10 @@
             .then((response) => response.json())
             .then((data) => {
                 info = data
-                ViewMenu()
+                window.setTimeout(function () {
+                    ViewMenu()
+                }, 300);
+                
             })
         } )
 
@@ -293,8 +296,6 @@
                     img += `<img src="${name}" style="width: 25vw; height: 25vh;">`;
                 }
                 imageCell.innerHTML = img;
-
-                imageCell.innerHTML = img
             }
         }
 
@@ -333,7 +334,9 @@
             })
             .then((response) => response.json())
             .then((data) => {
-                CreateTable(table, data)
+                window.setTimeout(function () {
+                    CreateTable(table, data);
+                }, 300);
 
                 searchLength = data.length
             })
