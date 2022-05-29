@@ -26,7 +26,6 @@ app.use((req, res, next) => {
     //when it is not logged in and url is main or admin page then redirect to main page
     if (!User.loggedIn && req.url != "/" && req.url != "/customer/") {
         console.log(req.url);
-        console.log("1");
         res.redirect("/");
     }
     //when it is logged in and
@@ -35,8 +34,7 @@ app.use((req, res, next) => {
         !req.url.includes(`/${User.role}`) &&
         req.url != "/"
     ) {
-        console.log("2");
-        res.redirect("/");
+        res.redirect(`/${User.role}`);
     } else {
         next();
     }
