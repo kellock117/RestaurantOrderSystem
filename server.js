@@ -24,8 +24,10 @@ app.use(compression());
 
 app.use((req, res, next) => {
     //when it is not logged in and url is main or admin page then redirect to main page
-    if (!User.loggedIn && req.url != "/" && req.url != "/customer") {
-        res.redirect(process.env.MAIN_PAGE);
+    if (!User.loggedIn && req.url != "/" && req.url != "/customer/") {
+        console.log(req.url);
+        console.log("1");
+        res.redirect("/");
     }
     //when it is logged in and
     else if (
@@ -33,7 +35,8 @@ app.use((req, res, next) => {
         !req.url.includes(`/${User.role}`) &&
         req.url != "/"
     ) {
-        res.redirect(process.env.MAIN_PAGE);
+        console.log("2");
+        res.redirect("/");
     } else {
         next();
     }
