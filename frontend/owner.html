@@ -206,11 +206,11 @@
                     },
                     body: JSON.stringify(body),
                 })
-                    .then(response => response.json())
-                    .then(data => {
-                        const div = document.getElementById(func[0] + "value");
-                        div.innerText = JSON.stringify(data);
-                    });
+                .then(response => response.json())
+                .then(data => {
+                    const div = document.getElementById(func[0] + "value");
+                    div.innerText = JSON.stringify(data);
+                });
             }
         </script>
     </body>
